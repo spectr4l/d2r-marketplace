@@ -1,0 +1,64 @@
+﻿{% extends "base.html" %}
+
+{% block content %}
+<div style="padding: 20px;">
+    <h2 style="color: #e94560; margin-bottom: 20px;">Inventário do D2R</h2>
+
+    <div style="background: #16213e; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <p style="color: #ccc;">
+            Esta página está lendo os arquivos de save encontrados na pasta configurada.
+        </p>
+        <p style="color: #4ecdc4; margin-top: 8px;">
+            A leitura detalhada dos itens ainda será implementada na próxima etapa.
+        </p>
+    </div>
+
+    {% if characters %}
+        <div style="display: grid; gap: 15px;">
+            {% for character in characters %}
+            <div style="background: #16213e; padding: 20px; border-radius: 8px; border: 1px solid #0f3460;">
+                <h3 style="color: #e94560; margin-bottom: 10px;">
+                    {{ character["character_name"] }}
+                </h3>
+
+                <p style="color: #ccc; margin-bottom: 6px;">
+                    <strong>Arquivo:</strong> {{ character["character_file"] }}
+                </p>
+
+                <p style="color: #ccc; margin-bottom: 6px;">
+                    <strong>Itens lidos:</strong> {{ character["item_count"] }}
+                </p>
+
+                <p style="color: #4ecdc4;">
+                    {{ character["read_status"] }}
+                </p>
+
+                {% if character["items"] %}
+                    <div style="margin-top: 15px;">
+                        {% for item in character["items"] %}
+                        <div style="background: #1a1a2e; padding: 10px; border-radius: 6px; margin-bottom: 8px;">
+                            <div><strong>{{ item["name"] }}</strong></div>
+                            <div style="color: #aaa;">Tipo: {{ item["item_type"] }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div style="margin-top: 15px; padding: 12px; background: #1a1a2e; border-radius: 6px; color: #888;">
+                        Nenhum item carregado ainda para este personagem.
+                    </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="background: #16213e; padding: 30px; border-radius: 8px; text-align: center;">
+            <p style="color: #ccc; font-size: 1.1rem; margin-bottom: 10px;">
+                Nenhum personagem encontrado.
+            </p>
+            <p style="color: #888;">
+                Confira a pasta configurada em <a href="/config" style="color: #e94560;">Configurações</a>.
+            </p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

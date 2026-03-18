@@ -1,0 +1,17 @@
+{
+    "runes": {
+        "El": 1, "Eld": 2, "Tir": 3, "Nef": 4, "Eth": 5,
+        "Ith": 6, "Tal": 7, "Ral": 8, "Ort": 9, "Thul": 10,
+        "Amn": 15, "Sol": 20, "Shael": 25, "Dol": 30,
+        "Hel": 40, "Io": 45, "Lum": 50, "Ko": 60,
+        "Fal": 70, "Lem": 80, "Pul": 90, "Um": 100,
+        "Mal": 120, "Ist": 150, "Gul": 180, "Vex": 210,
+        "Ohm": 250, "Lo": 300, "Sur": 350, "Ber": 400,
+        "Jah": 450, "Cham": 500, "Zod": 600
+    },
+    "uniques": {
+        "Harlequin Crest": 300,
+        "The Grandfather": 250,
+        "Windforce": 350
+    }
+}

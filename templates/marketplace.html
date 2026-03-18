@@ -1,0 +1,392 @@
+﻿{% extends "base.html" %}
+
+{% block content %}
+<h2 class="page-title">Marketplace</h2>
+
+<div class="panel">
+    <p>
+        Veja os itens disponíveis no mercado interno, acompanhe preços e gerencie suas transações com tokens.
+    </p>
+</div>
+
+<div class="panel">
+    <div class="toolbar">
+        <input type="text" id="marketplace-search" placeholder="Buscar item..." onkeyup="filterMarketplaceCards()">
+
+        <select id="marketplace-filter" onchange="filterMarketplaceCards()">
+            <option value="all">Todos</option>
+            <option value="runa">Runas</option>
+            <option value="item">Itens</option>
+        </select>
+
+        <select id="marketplace-sort" onchange="sortMarketplaceCards()">
+            <option value="name-asc">Nome A-Z</option>
+            <option value="name-desc">Nome Z-A</option>
+            <option value="price-asc">Menor preço</option>
+            <option value="price-desc">Maior preço</option>
+        </select>
+    </div>
+</div>
+
+<div class="grid" id="marketplace-grid">
+    {% if listings and listings|length > 0 %}
+        {% set rune_order = [
+            'El', 'Eld', 'Tir', 'Nef', 'Eth', 'Ith', 'Tal', 'Ral', 'Ort', 'Thul',
+            'Amn', 'Sol', 'Shael', 'Dol', 'Hel', 'Io', 'Lum', 'Ko', 'Fal', 'Lem',
+            'Pul', 'Um', 'Mal', 'Ist', 'Gul', 'Vex', 'Ohm', 'Lo', 'Sur', 'Ber',
+            'Jah', 'Cham', 'Zod'
+        ] %}
+
+        {% for item in listings %}
+            {% set item_name = item.item_name if item.item_name is defined else item.name %}
+            {% set item_type = item.item_type if item.item_type is defined else 'item' %}
+            {% set item_price = item.token_price if item.token_price is defined else item.price %}
+            {% set item_status = item.status if item.status is defined else 'available' %}
+            {% set seller = item.seller_name if item.seller_name is defined else 'Marketplace' %}
+            {% set created_at = item.created_at if item.created_at is defined else None %}
+            {% set rune_tier = rune_order.index(item_name) + 1 if item_name in rune_order else 0 %}
+            {% set is_rune = item_type|lower == 'runa' or item_type|lower == 'rune' or item_name in rune_order %}
+
+            <div class="card marketplace-card"
+                data-name="{{ item_name|lower }}"
+                data-type="{{ 'runa' if is_rune else 'item' }}"
+                data-price="{{ item_price }}"
+                data-status="{{ item_status|lower }}">
+
+                <div class="item-header">
+                    <span class="badge">
+                        {{ 'Runa' if is_rune else item_type }}
+                    </span>
+
+                    {% if is_rune and rune_tier > 0 %}
+                        <span class="badge tier-badge">Tier {{ rune_tier }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="item-image-container {% if is_rune and rune_tier > 0 %}tier-visual-{{ rune_tier }}{% endif %}">
+                    {% if is_rune %}
+                        <img
+                            class="item-image"
+                            src="{{ url_for('static', filename='img/runes/' ~ item_name|lower ~ '.webp') }}"
+                            alt="{{ item_name }}"
+                            loading="lazy"
+                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                        >
+                    {% else %}
+                        <img
+                            class="item-image"
+                            src="{{ url_for('static', filename='img/items/' ~ item_name|lower|replace(' ', '_') ~ '.webp') }}"
+                            alt="{{ item_name }}"
+                            loading="lazy"
+                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                        >
+                    {% endif %}
+
+                    <div class="market-item-fallback" style="display:none;">
+                        {{ item_name[:2]|upper }}
+                    </div>
+
+                    {% if is_rune %}
+                        <div class="item-tooltip">
+                            <div class="tooltip-title">{{ item_name }} Rune</div>
+
+                            <div class="tooltip-section">
+                                <div class="tooltip-label">Arma</div>
+                                <div class="tooltip-line">{{ get_rune_tooltip(item_name, 'weapon') }}</div>
+                            </div>
+
+                            <div class="tooltip-section">
+                                <div class="tooltip-label">Armadura / Elmo</div>
+                                <div class="tooltip-line">{{ get_rune_tooltip(item_name, 'armor') }}</div>
+                            </div>
+
+                            <div class="tooltip-section">
+                                <div class="tooltip-label">Escudo</div>
+                                <div class="tooltip-line">{{ get_rune_tooltip(item_name, 'shield') }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="item-name">{{ item_name }}</div>
+
+                <div class="item-price">{{ item_price }} tokens</div>
+
+                <div class="market-actions">
+                    {% if item_status|lower == 'available' %}
+                        <button
+                            class="secondary market-action-button"
+                            onclick="sellItem('{{ item.id }}')">
+                            Vender
+                        </button>
+                    {% else %}
+                        <button class="secondary market-action-button disabled-button" disabled>
+                            Indisponível
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="panel empty-state">
+            Nenhum item disponível no marketplace no momento.
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 0.75rem;
+    }
+
+    .marketplace-card:hover {
+        z-index: 200;
+    }
+
+    .card.marketplace-card {
+        overflow: visible !important;
+    }
+
+    .marketplace-card {
+        position: relative;
+        overflow: visible !important;
+    }
+
+    .item-image-container {
+        position: relative;
+        z-index: 1;
+        overflow: visible;
+        height: 130px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0.5rem 0 1rem;
+        border-radius: 12px;
+        background: rgba(15, 23, 42, 0.92);
+        border: 1px solid #1f2937;
+        transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    .marketplace-card:hover .item-image-container {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+    }
+
+    .item-image {
+        position: relative;
+        z-index: 1;
+        max-width: 88px;
+        max-height: 88px;
+        object-fit: contain;
+        filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.35));
+    }
+
+    .market-item-fallback {
+        width: 84px;
+        height: 84px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(circle, #1f2937, #0f172a);
+        border: 1px solid #334155;
+        color: #f59e0b;
+        font-size: 1.2rem;
+        font-weight: 800;
+        letter-spacing: 0.03em;
+    }
+
+    .item-name {
+        text-align: center;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #f59e0b;
+        margin-bottom: 0.6rem;
+    }
+
+    .item-price {
+        color: #34d399;
+        font-weight: bold;
+        font-size: 1.05rem;
+        text-align: center;
+        margin: 0.7rem 0 1rem;
+    }
+
+    .market-actions {
+        display: flex;
+        justify-content: center;
+    }
+
+    .market-action-button {
+        width: 100%;
+    }
+
+    .disabled-button {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .item-tooltip {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 110%;
+        width: 280px;
+        background: rgba(10, 10, 16, 0.97);
+        color: #d1d5db;
+        padding: 12px 14px;
+        border: 1px solid #4b5563;
+        border-radius: 8px;
+        text-align: left;
+        font-size: 12px;
+        line-height: 1.45;
+        z-index: 9999;
+        pointer-events: none;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    .item-image-container:hover .item-tooltip {
+        display: block;
+    }
+
+    .tooltip-title {
+        color: #60a5fa;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .tooltip-section + .tooltip-section {
+        margin-top: 8px;
+    }
+
+    .tooltip-label {
+        color: #fbbf24;
+        font-weight: 700;
+        margin-bottom: 2px;
+    }
+
+    .tooltip-line {
+        color: #e5e7eb;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 768px) {
+        .item-image-container {
+            height: 110px;
+        }
+
+        .item-tooltip {
+            left: 50%;
+            top: 105%;
+            transform: translateX(-50%);
+            width: 240px;
+        }
+    }
+</style>
+
+<script>
+    function filterMarketplaceCards() {
+        const searchInput = document.getElementById("marketplace-search");
+        const filterInput = document.getElementById("marketplace-filter");
+        const cards = document.querySelectorAll("#marketplace-grid .marketplace-card");
+
+        const search = searchInput ? searchInput.value.toLowerCase() : "";
+        const filter = filterInput ? filterInput.value.toLowerCase() : "all";
+
+        cards.forEach(card => {
+            const name = (card.dataset.name || "").toLowerCase();
+            const type = (card.dataset.type || "").toLowerCase();
+
+            const matchesSearch = name.includes(search);
+            const matchesFilter = filter === "all" || type === filter;
+
+            card.style.display = (matchesSearch && matchesFilter) ? "flex" : "none";
+        });
+    }
+
+    function sortMarketplaceCards() {
+        const grid = document.getElementById("marketplace-grid");
+        const sort = document.getElementById("marketplace-sort").value;
+
+        const cards = Array.from(grid.querySelectorAll(".marketplace-card"));
+
+        cards.sort((a, b) => {
+            const nameA = a.dataset.name || "";
+            const nameB = b.dataset.name || "";
+            const priceA = parseFloat(a.dataset.price || "0");
+            const priceB = parseFloat(b.dataset.price || "0");
+
+            switch (sort) {
+                case "name-desc":
+                    return nameB.localeCompare(nameA);
+                case "price-asc":
+                    return priceA - priceB;
+                case "price-desc":
+                    return priceB - priceA;
+                case "name-asc":
+                default:
+                    return nameA.localeCompare(nameB);
+            }
+        });
+
+        cards.forEach(card => grid.appendChild(card));
+    }
+
+    async function buyMarketplaceItem(listingId, itemName, itemType, tokenPrice) {
+        const activeButton = document.activeElement;
+        const originalText = activeButton && activeButton.tagName === "BUTTON"
+            ? activeButton.innerText
+            : null;
+
+        try {
+            if (activeButton && activeButton.tagName === "BUTTON") {
+                activeButton.disabled = true;
+                activeButton.innerText = "Comprando...";
+            }
+
+            const result = await postJson("/api/buy_item", {
+                listing_id: listingId,
+                item_name: itemName,
+                item_type: itemType,
+                token_price: tokenPrice
+            });
+
+            if (result.success) {
+                if (typeof updateBalanceDisplay === "function" && result.new_balance !== undefined) {
+                    updateBalanceDisplay(result.new_balance);
+                }
+
+                if (typeof showMessage === "function") {
+                    showMessage(`Compra realizada: ${itemName}`, "success");
+                }
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 700);
+
+                return;
+            }
+
+            if (typeof showMessage === "function") {
+                showMessage("Erro: " + (result.error || "falha na compra"), "error");
+            }
+        } catch (error) {
+            console.error(error);
+
+            if (typeof showMessage === "function") {
+                showMessage("Erro ao comprar item: " + error.message, "error");
+            }
+        } finally {
+            if (activeButton && activeButton.tagName === "BUTTON") {
+                activeButton.disabled = false;
+                activeButton.innerText = originalText || "Comprar";
+            }
+        }
+    }
+</script>
+{% endblock %}
