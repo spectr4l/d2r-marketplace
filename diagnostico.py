@@ -28,13 +28,13 @@ if os.path.exists(file_path):
             print(" JSON válido!")
             
             # Verificar estrutura
-            if 'runs' in data:
-                print(f" Encontradas {len(data['runs'])} runas")
+            if 'runes' in data:
+                print(f" Encontradas {len(data['runes'])} runas")
                 print("Primeiras 5 runas:")
-                for i, (runa, preco) in enumerate(list(data['runs'].items())[:5]):
+                for i, (runa, preco) in enumerate(list(data['runes'].items())[:5]):
                     print(f"   {runa}: {preco} tokens")
             else:
-                print(" Campo 'runs' não encontrado")
+                print(" Campo 'runes' não encontrado")
                 
         except json.JSONDecodeError as e:
             print(f" Erro no JSON: {e}")
