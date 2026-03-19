@@ -1,88 +1,89 @@
-﻿import os
+﻿import json
+import os
+import subprocess
 
 
-def find_save_files(save_folder):
-    saves = []
-
-    if not save_folder:
-        return saves
-
-    if os.path.exists(save_folder):
-        for file in os.listdir(save_folder):
-            if file.lower().endswith(".d2s"):
-                saves.append(os.path.join(save_folder, file))
-
-    return sorted(saves)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PARSER_DIR = os.path.join(BASE_DIR, "tools", "d2r_parser")
+JAVA_CMD = "java"
 
 
-def get_character_name_from_file(save_file):
-    return os.path.splitext(os.path.basename(save_file))[0]
+def inspect_d2s_header(save_file):
+    try:
+        with open(save_file, "rb") as f:
+            header = f.read(16)
 
+        if len(header) < 16:
+            return {
+                "valid_header": False,
+                "error": "Arquivo muito pequeno para conter cabeçalho válido.",
+            }
 
-def normalize_item(item):
-    return {
-        "name": str(getattr(item, "name", "Item desconhecido")),
-        "item_type": str(getattr(item, "base_name", getattr(item, "type", "unknown"))),
-        "quality": (
-            "unique" if getattr(item, "is_unique", False)
-            else "unknown"
-        ),
-    }
+        return {
+            "valid_header": True,
+            "raw_header_hex": header.hex(" "),
+            "header_size": len(header),
+        }
+    except Exception as e:
+        return {
+            "valid_header": False,
+            "error": repr(e),
+        }
 
 
 def try_read_items_with_d2lib(save_file):
-    from d2lib.files import D2SFile
+    command = [
+        JAVA_CMD,
+        "-cp",
+        ".;lib/*",
+        "Main",
+        save_file
+    ]
 
-    d2s_file = D2SFile(save_file)
-    raw_items = getattr(d2s_file, "items", []) or []
+    result = subprocess.run(
+        command,
+        cwd=PARSER_DIR,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace"
+    )
 
-    return [normalize_item(item) for item in raw_items]
+    if result.returncode != 0:
+        raise Exception(
+            f"Falha ao executar parser Java. "
+            f"stdout={result.stdout!r} stderr={result.stderr!r}"
+        )
 
+    output = result.stdout.strip()
+    if not output:
+        raise Exception("Parser Java não retornou nenhuma saída.")
 
-def get_all_characters_and_items(save_folder):
-    save_files = find_save_files(save_folder)
-    characters = []
+    lines = [line.strip() for line in output.splitlines() if line.strip()]
+    json_line = None
 
-    for save_file in save_files:
-        character_name = get_character_name_from_file(save_file)
+    for line in reversed(lines):
+        if line.startswith("{") and line.endswith("}"):
+            json_line = line
+            break
 
-        try:
-            items = try_read_items_with_d2lib(save_file)
+    if not json_line:
+        raise Exception(f"Saída inválida do parser Java: {output!r}")
 
-            characters.append({
-                "character_name": character_name,
-                "character_file": save_file,
-                "items": items,
-                "item_count": len(items),
-                "read_status": "Itens carregados com sucesso"
-            })
+    try:
+        data = json.loads(json_line)
+    except json.JSONDecodeError as e:
+        raise Exception(f"JSON inválido do parser Java: {json_line!r}") from e
 
-        except ImportError as e:
-            characters.append({
-                "character_name": character_name,
-                "character_file": save_file,
-                "items": [],
-                "item_count": 0,
-                "read_status": f"Falha ao importar d2lib: {str(e)}"
-            })
+    if "error" in data:
+        raise Exception(data["error"])
 
-        except Exception as e:
-            error_text = str(e)
+    items = []
+    for item in data.get("items", []):
+        items.append({
+            "name": str(item.get("name", "Item desconhecido")),
+            "item_type": str(item.get("type", "unknown")),
+            "quality": str(item.get("quality", "unknown")).lower(),
+        })
 
-            if "Invalid item header id" in error_text:
-                readable_status = (
-                    "Save encontrado, mas o parser atual não conseguiu ler os itens "
-                    "(formato/estrutura do save incompatível com a biblioteca atual)"
-                )
-            else:
-                readable_status = f"Leitura ainda não disponível neste formato: {error_text}"
-
-            characters.append({
-                "character_name": character_name,
-                "character_file": save_file,
-                "items": [],
-                "item_count": 0,
-                "read_status": readable_status
-            })
-
-    return characters
+    return items

@@ -10,16 +10,19 @@ from services.marketplace_service import (
     buy_catalog_item,
     import_virtual_item_to_game,
 )
-from services.inventory_service import list_characters_and_items
+from services.inventory_service import get_all_characters_and_items
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key-change-this")
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+CONFIG_FILE = os.path.join(BASE_DIR, "config.json")
 
-CONFIG_FILE = "config.json"
+DATA_DIR = os.path.join(BASE_DIR, "data")
+TOKEN_PRICES_FILE = os.path.join(DATA_DIR, "item_prices.json")
+
 DEFAULT_SAVE_FOLDER = os.path.expanduser("~/Documents/Diablo II Resurrected/")
-TOKEN_PRICES_FILE = os.path.join("data", "item_prices.json")
 
 RUNE_TOOLTIPS = {
     "El": {
@@ -255,7 +258,8 @@ def load_token_prices():
         }
     }
 
-    os.makedirs("data", exist_ok=True)
+    os.makedirs(DATA_DIR, exist_ok=True)
+
     with open(TOKEN_PRICES_FILE, "w", encoding="utf-8") as f:
         json.dump(default_prices, f, indent=2, ensure_ascii=False)
 
@@ -269,15 +273,16 @@ def index():
 
 @app.route("/inventory")
 def inventory():
-    characters = list_characters_and_items(SAVE_FOLDER)
+    save_folder = load_app_config().get("save_folder", "")
+    characters = get_all_characters_and_items(save_folder)
     return render_template("inventory.html", characters=characters)
 
 
-@app.route("/marketplace")
+@app.route("/stash")
 def marketplace():
     virtual_items = list_available_items()
     balance = get_token_balance()
-    return render_template("marketplace.html", listings=virtual_items, balance=balance)
+    return render_template("stash.html", listings=virtual_items, balance=balance)
 
 
 @app.route("/catalog")

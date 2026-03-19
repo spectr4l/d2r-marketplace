@@ -189,27 +189,3 @@ button:disabled {
         justify-content: center;
     }
 }
-.item-image-container {
-    position: relative;
-}
-
-.item-tooltip {
-    display: none;
-    position: absolute;
-    top: 0;
-    left: 110%;
-    width: 220px;
-    
-    background-color: rgba(0, 0, 0, 0.9);
-    color: #fff;
-    
-    padding: 10px;
-    border-radius: 6px;
-    font-size: 12px;
-    
-    z-index: 10;
-}
-
-.item-image-container:hover .item-tooltip {
-    display: block;
-}

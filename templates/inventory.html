@@ -9,7 +9,7 @@
             Esta página está lendo os arquivos de save encontrados na pasta configurada.
         </p>
         <p style="color: #4ecdc4; margin-top: 8px;">
-            A leitura detalhada dos itens ainda será implementada na próxima etapa.
+            Quando possível, os itens serão exibidos abaixo para cada personagem.
         </p>
     </div>
 
@@ -29,7 +29,7 @@
                     <strong>Itens lidos:</strong> {{ character["item_count"] }}
                 </p>
 
-                <p style="color: #4ecdc4;">
+                <p style="color: #4ecdc4; margin-bottom: 10px;">
                     {{ character["read_status"] }}
                 </p>
 
@@ -39,13 +39,31 @@
                         <div style="background: #1a1a2e; padding: 10px; border-radius: 6px; margin-bottom: 8px;">
                             <div><strong>{{ item["name"] }}</strong></div>
                             <div style="color: #aaa;">Tipo: {{ item["item_type"] }}</div>
+                            <div style="color: #aaa;">Qualidade: {{ item["quality"] }}</div>
+
+                            {% if item.get("read_error") %}
+                            <div style="color: #ff9f43; margin-top: 6px;">
+                                Erro ao interpretar este item: {{ item["read_error"] }}
+                            </div>
+                            {% endif %}
                         </div>
                         {% endfor %}
                     </div>
                 {% else %}
                     <div style="margin-top: 15px; padding: 12px; background: #1a1a2e; border-radius: 6px; color: #888;">
-                        Nenhum item carregado ainda para este personagem.
+                        Save encontrado, mas nenhum item pôde ser carregado com o parser atual.
                     </div>
+                {% endif %}
+
+                {% if character.get("raw_error") %}
+                <details style="margin-top: 12px;">
+                    <summary style="cursor: pointer; color: #ff9f43;">
+                        Ver detalhes técnicos
+                    </summary>
+                    <div style="margin-top: 10px; padding: 12px; background: #101522; border-radius: 6px; color: #bbb; word-break: break-word;">
+                        {{ character["raw_error"] }}
+                    </div>
+                </details>
                 {% endif %}
             </div>
             {% endfor %}

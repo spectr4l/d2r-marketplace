@@ -181,11 +181,100 @@ function filterMarketplaceCards() {
 
     cards.forEach(card => {
         const name = card.dataset.name || "";
-        const quality = card.dataset.quality || "";
+        const type = card.dataset.type || "";
 
         const matchesSearch = name.includes(search);
-        const matchesFilter = filter === "all" || quality === filter;
+        const matchesFilter = filter === "all" || type === filter;
 
         card.style.display = (matchesSearch && matchesFilter) ? "block" : "none";
     });
 }
+
+function placeTooltip(card) {
+    const tooltip = card.querySelector(".item-tooltip");
+    if (!tooltip) return;
+
+    const anchor = card.querySelector(".item-image-container") || card;
+
+    const gap = 10;
+    const viewportPadding = 12;
+
+    // prepara para medir sem mostrar visualmente no lugar errado
+    tooltip.classList.add("is-visible");
+    tooltip.style.visibility = "hidden";
+    tooltip.style.left = "0px";
+    tooltip.style.top = "0px";
+
+    const anchorRect = anchor.getBoundingClientRect();
+    const tooltipRect = tooltip.getBoundingClientRect();
+
+    let left = anchorRect.right + gap;
+    let top = anchorRect.top + (anchorRect.height - tooltipRect.height) / 2;
+
+    if (left + tooltipRect.width > window.innerWidth - viewportPadding) {
+        left = anchorRect.left - tooltipRect.width - gap;
+    }
+
+    if (left < viewportPadding) {
+        left = viewportPadding;
+    }
+
+    if (left + tooltipRect.width > window.innerWidth - viewportPadding) {
+        left = window.innerWidth - tooltipRect.width - viewportPadding;
+    }
+
+    if (top < viewportPadding) {
+        top = viewportPadding;
+    }
+
+    if (top + tooltipRect.height > window.innerHeight - viewportPadding) {
+        top = window.innerHeight - tooltipRect.height - viewportPadding;
+    }
+
+    tooltip.style.left = `${Math.round(left)}px`;
+    tooltip.style.top = `${Math.round(top)}px`;
+    tooltip.style.visibility = "visible";
+}
+
+function hideTooltip(card) {
+    const tooltip = card.querySelector(".item-tooltip");
+    if (!tooltip) return;
+
+    tooltip.classList.remove("is-visible");
+    tooltip.style.left = "";
+    tooltip.style.top = "";
+    tooltip.style.visibility = "";
+}
+
+function initializeItemTooltips() {
+    const cards = document.querySelectorAll(".marketplace-card, .catalog-card");
+
+    cards.forEach(card => {
+        const tooltip = card.querySelector(".item-tooltip");
+        if (!tooltip) return;
+
+        card.addEventListener("mouseenter", () => {
+            requestAnimationFrame(() => placeTooltip(card));
+        });
+
+        card.addEventListener("mouseleave", () => {
+            hideTooltip(card);
+        });
+    });
+
+    window.addEventListener("scroll", () => {
+        const hovered = document.querySelector(".marketplace-card:hover, .catalog-card:hover");
+        if (hovered) {
+            placeTooltip(hovered);
+        }
+    }, true);
+
+    window.addEventListener("resize", () => {
+        const hovered = document.querySelector(".marketplace-card:hover, .catalog-card:hover");
+        if (hovered) {
+            placeTooltip(hovered);
+        }
+    });
+}
+
+document.addEventListener("DOMContentLoaded", initializeItemTooltips);

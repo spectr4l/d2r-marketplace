@@ -5,7 +5,7 @@
 
 <div class="panel">
     <p>
-        Compre itens virtuais usando seus tokens. Os itens comprados vão para o seu marketplace interno.
+        Compre itens virtuais usando seus tokens. Os itens comprados vão para o seu Stash interno.
     </p>
 </div>
 
@@ -250,54 +250,91 @@
         text-align: center;
         margin: 0.7rem 0 1rem;
     }
-    .item-tooltip {
-        display: none;
-        position: absolute;
+
+    .card.catalog-card {
+        overflow: visible !important;
+    }
+
+    .catalog-card {
+        position: relative;
+        overflow: visible !important;
+    }
+
+    .catalog-card:hover {
+        z-index: 200;
+    }
+
+    .catalog-card .item-image-container {
+        position: relative;
+        overflow: visible;
+        z-index: 1;
+        height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0.5rem 0 1rem;
+        border-radius: 12px;
+        background: rgba(15, 23, 42, 0.9);
+        border: 1px solid #1f2937;
+        transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    .catalog-card:hover .item-image-container {
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+    }
+
+    .catalog-card .item-tooltip {
+        position: fixed;
+        left: 0;
         top: 0;
-        left: 110%;
-        width: 280px;
-        background: rgba(10, 10, 16, 0.97);
-        color: #d1d5db;
-        padding: 12px 14px;
-        border: 1px solid #4b5563;
-        border-radius: 8px;
-        z-index: 50;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-        text-align: left;
-        font-size: 12px;
-        line-height: 1.45;
+        width: min(320px, calc(100vw - 24px));
+        padding: 14px 16px 16px;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        z-index: 9999;
+        transition: opacity 0.12s ease;
     }
 
-    .item-image-container:hover .item-tooltip {
-        display: block;
+    .catalog-card .item-tooltip.is-visible {
+        opacity: 1;
+        visibility: visible;
     }
 
-    .tooltip-title {
-        color: #60a5fa;
+    .catalog-card .tooltip-title {
+        color: #8b7bff;
         font-weight: 700;
-        margin-bottom: 8px;
+        font-size: 15px;
+        text-align: center;
+        margin-bottom: 10px;
+        text-shadow: 0 0 6px rgba(139, 123, 255, 0.18);
     }
 
-    .tooltip-section + .tooltip-section {
+    .catalog-card .tooltip-section {
         margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(111, 100, 62, 0.35);
     }
 
-    .tooltip-label {
-        color: #fbbf24;
+    .catalog-card .tooltip-section:first-of-type {
+        margin-top: 0;
+        padding-top: 0;
+        border-top: none;
+    }
+
+    .catalog-card .tooltip-label {
+        color: #c7a24a;
         font-weight: 700;
-        margin-bottom: 2px;
+        margin-bottom: 4px;
     }
 
-    .tooltip-line {
-        color: #e5e7eb;
+    .catalog-card .tooltip-line {
+        color: #7fb3ff;
     }
 
     @media (max-width: 768px) {
-        .item-tooltip {
-            left: 50%;
-            top: 105%;
-            transform: translateX(-50%);
-            width: 240px;
+        .catalog-card .item-tooltip {
+            width: min(280px, calc(100vw - 24px));
         }
     }
 </style>
