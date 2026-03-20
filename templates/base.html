@@ -1,244 +1,38 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D2R Market</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D2R Market</title>
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #0f172a;
-            color: #f8fafc;
-        }
-
-        nav {
-            background: #111827;
-            border-bottom: 1px solid #1f2937;
-            padding: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        nav h1 {
-            color: #f59e0b;
-            font-size: 1.5rem;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 1.2rem;
-            flex-wrap: wrap;
-        }
-
-        nav a {
-            color: #e5e7eb;
-            text-decoration: none;
-            transition: 0.2s;
-            font-weight: 500;
-        }
-
-        nav a:hover {
-            color: #f59e0b;
-        }
-
-        .token-balance {
-            background: linear-gradient(135deg, #1d4ed8, #2563eb);
-            padding: 0.55rem 1rem;
-            border-radius: 999px;
-            font-weight: bold;
-            color: white;
-            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
-        }
-
-        main {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem 2rem;
-        }
-
-        .page-title {
-            font-size: 2rem;
-            margin-bottom: 1.2rem;
-            color: #f59e0b;
-        }
-
-        .panel {
-            background: #111827;
-            border: 1px solid #1f2937;
-            border-radius: 14px;
-            padding: 1rem;
-            margin-bottom: 1.2rem;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 16px;
-        }
-
-        .card {
-            background: #111827;
-            border: 1px solid #1f2937;
-            border-radius: 14px;
-            padding: 1rem;
-            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
-            transition: transform 0.15s ease, border-color 0.15s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-2px);
-            border-color: #374151;
-        }
-
-        .card-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #f59e0b;
-            margin-bottom: 0.6rem;
-        }
-
-        .muted {
-            color: #9ca3af;
-        }
-
-        .price {
-            color: #34d399;
-            font-weight: bold;
-            font-size: 1.05rem;
-            margin: 0.7rem 0 1rem;
-        }
-
-        button {
-            background: linear-gradient(135deg, #dc2626, #ef4444);
-            color: white;
-            border: none;
-            padding: 0.65rem 1rem;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.2s;
-            font-size: 0.95rem;
-            font-weight: 600;
-            width: 100%;
-        }
-
-        button:hover {
-            filter: brightness(1.08);
-        }
-
-        button.secondary {
-            background: linear-gradient(135deg, #1d4ed8, #2563eb);
-        }
-
-        input, select {
-            width: 100%;
-            padding: 0.75rem;
-            border-radius: 10px;
-            border: 1px solid #334155;
-            background: #0b1220;
-            color: #f8fafc;
-            outline: none;
-        }
-
-        .toolbar {
-            display: grid;
-            grid-template-columns: 1fr 220px;
-            gap: 12px;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 2rem;
-            color: #9ca3af;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 0.28rem 0.65rem;
-            border-radius: 999px;
-            background: #1f2937;
-            color: #cbd5e1;
-            font-size: 0.82rem;
-            margin-bottom: 0.8rem;
-        }
-
-        .message-area {
-            margin-bottom: 1rem;
-        }
-
-        .message {
-            padding: 0.9rem 1rem;
-            border-radius: 12px;
-            font-weight: 500;
-            border: 1px solid transparent;
-        }
-
-        .message.success {
-            background: rgba(16, 185, 129, 0.12);
-            border-color: rgba(16, 185, 129, 0.25);
-            color: #6ee7b7;
-        }
-
-        .message.error {
-            background: rgba(239, 68, 68, 0.12);
-            border-color: rgba(239, 68, 68, 0.25);
-            color: #fca5a5;
-        }
-
-        @media (max-width: 768px) {
-            .toolbar {
-                grid-template-columns: 1fr;
-            }
-
-            .nav-container {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
-    </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <nav>
-        <div class="nav-container">
-            <h1>D2R Market</h1>
+  <nav>
+    <div class="nav-container">
+      <h1>D2R Market</h1>
 
-            <ul>
-                <li><a href="/">Início</a></li>
-                <li><a href="/inventory">Inventário</a></li>
-                <li><a href="/catalog">Catálogo</a></li>
-                <li><a href="/stash">Stash</a></li>
-                <li><a href="/config">Configurações</a></li>
-            </ul>
+      <ul>
+				<li><a href="{{ url_for('index') }}">Início</a></li>
+				<li><a href="{{ url_for('inventory') }}">Inventário</a></li>
+				<li><a href="{{ url_for('catalog') }}">Catálogo</a></li>
+				<li><a href="{{ url_for('marketplace') }}">Stash</a></li>
+				<li><a href="{{ url_for('config') }}">Configurações</a></li>
+			</ul>
 
-            <div class="token-balance">
-                <span id="balance-value">{{ global_balance }}</span> tokens
-            </div>
-        </div>
-    </nav>
+      <div class="token-balance">
+        <span id="balance-value">{{ global_balance }}</span> tokens
+      </div>
+    </div>
+  </nav>
 
-    <main>
-        <div id="message-area" class="message-area"></div>
-        {% block content %}{% endblock %}
-    </main>
+  <main>
+    <div id="message-area"></div>
+    {% block content %}{% endblock %}
+  </main>
 
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block extra_js %}{% endblock %}
 </body>
 </html>

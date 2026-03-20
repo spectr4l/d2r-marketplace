@@ -1,6 +1,11 @@
 ﻿{% extends "base.html" %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/catalog.css') }}">
+{% endblock %}
+
 {% block content %}
+<section class="catalog-page">
 <h2 class="page-title">Catálogo</h2>
 
 <div class="panel">
@@ -31,54 +36,36 @@
         {% for item_name, token_price in prices.runes.items() %}
             {% set rune_tier = rune_order.index(item_name) + 1 if item_name in rune_order else 0 %}
 
-            <div class="card catalog-card" data-name="{{ item_name|lower }}" data-type="runa">
-                <div class="item-header">
-                    <span class="badge">Runa</span>
-                    <span class="badge">Tier {{ rune_tier }}</span>
-                </div>
+            <div class="catalog-card"
+								 data-name="{{ item_name }}"
+								 data-type="runa"
+								 data-price="{{ token_price }}">
 
-                <div class="item-image-container">
-                    <img
-                        src="{{ url_for('static', filename='img/runes/' ~ item_name|lower ~ '.webp') }}"
-                        alt="{{ item_name }}"
-                        class="item-image"
-                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                    >
+								<div class="item-image-container">
+										<img src="{{ url_for('static', filename='img/runes/' ~ item_name|lower ~ '.webp') }}"
+												 alt="{{ item_name }}"
+												 class="item-image">
+								</div>
 
-                    <div class="rune-image-fallback" style="display:none;">
-                        {{ item_name }}
-                    </div>
+								<div class="catalog-card-type">Runa Tier {{ rune_tier }}</div>
+								<div class="catalog-card-title">{{ item_name }}</div>
+								<div class="catalog-card-price">{{ token_price }} tokens</div>
 
-                    <div class="item-tooltip">
-                        <div class="tooltip-title">{{ item_name }} Rune</div>
-                        <div class="tooltip-section">
-                            <div class="tooltip-label">Arma</div>
-                            <div class="tooltip-line">{{ get_rune_tooltip(item_name, 'weapon') }}</div>
-                        </div>
-                        <div class="tooltip-section">
-                            <div class="tooltip-label">Armadura / Elmo</div>
-                            <div class="tooltip-line">{{ get_rune_tooltip(item_name, 'armor') }}</div>
-                        </div>
-                        <div class="tooltip-section">
-                            <div class="tooltip-label">Escudo</div>
-                            <div class="tooltip-line">{{ get_rune_tooltip(item_name, 'shield') }}</div>
-                        </div>
-                    </div>
-                </div>
+								<button class="btn btn-primary buy-btn"
+												onclick="buyCatalogItem('{{ item_name }}', 'runa', {{ token_price }})">
+										Comprar
+								</button>
 
-                <div class="item-name">
-                    {{ item_name }}
-                </div>
-
-                <div class="item-price">
-                    {{ token_price }} tokens
-                </div>
-
-                <button class="buy-button"
-                    onclick='buyItem("{{ item_name }}", "runa", {{ token_price }})'>
-                    Comprar
-                </button>
-            </div>
+								<div class="tooltip-panel rune-tooltip">
+										<strong>{{ item_name }} Rune</strong>
+										<div><strong>Arma</strong></div>
+										<div>{{ get_rune_tooltip(item_name, 'weapon') }}</div>
+										<div><strong>Armadura / Elmo</strong></div>
+										<div>{{ get_rune_tooltip(item_name, 'armor') }}</div>
+										<div><strong>Escudo</strong></div>
+										<div>{{ get_rune_tooltip(item_name, 'shield') }}</div>
+								</div>
+						</div>
         {% endfor %}
     {% else %}
         <div class="panel empty-state">
@@ -86,256 +73,57 @@
         </div>
     {% endif %}
 </div>
+</section>
+<script>
+async function buyCatalogItem(itemName, itemType, tokenPrice) {
+    const activeButton = document.activeElement;
+    const originalText = activeButton && activeButton.tagName === "BUTTON"
+        ? activeButton.innerText
+        : null;
 
-<style>
-    .catalog-rune-card {
-        display: flex;
-        flex-direction: column;
-        min-height: 380px;
-        position: relative;
-        overflow: hidden;
-        background:
-            radial-gradient(circle at top, rgba(245, 158, 11, 0.08), transparent 35%),
-            #111827;
-    }
-
-    .catalog-rune-card::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        border-radius: 14px;
-        background: linear-gradient(
-            180deg,
-            rgba(255,255,255,0.03) 0%,
-            rgba(255,255,255,0) 30%
-        );
-    }
-
-    .card-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 0.75rem;
-    }
-
-    .tier-badge {
-        background: rgba(245, 158, 11, 0.12);
-        color: #fbbf24;
-        border: 1px solid rgba(245, 158, 11, 0.18);
-    }
-
-    .rune-image-wrap {
-        height: 120px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0.5rem 0 1rem;
-        border-radius: 12px;
-        background: rgba(15, 23, 42, 0.9);
-        border: 1px solid #1f2937;
-    }
-
-    .rune-image {
-        max-width: 84px;
-        max-height: 84px;
-        object-fit: contain;
-        image-rendering: auto;
-        filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.35));
-    }
-
-    .rune-image-fallback {
-        width: 84px;
-        height: 84px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: radial-gradient(circle, #1f2937, #0f172a);
-        border: 1px solid #334155;
-        color: #f59e0b;
-        font-size: 1.2rem;
-        font-weight: 800;
-        letter-spacing: 0.03em;
-    }
-
-    .catalog-meta {
-        margin-top: 0.9rem;
-        margin-bottom: 0.9rem;
-        padding: 0.8rem;
-        border-radius: 10px;
-        background: rgba(15, 23, 42, 0.72);
-        border: 1px solid #1f2937;
-    }
-
-    .meta-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .meta-row + .meta-row {
-        margin-top: 0.5rem;
-    }
-
-    .meta-label {
-        color: #94a3b8;
-        font-size: 0.92rem;
-    }
-
-    .meta-value {
-        color: #e5e7eb;
-        font-weight: 600;
-        font-size: 0.95rem;
-    }
-
-    .catalog-rune-card .price {
-        margin-top: auto;
-        margin-bottom: 0.9rem;
-        font-size: 1.1rem;
-    }
-
-    .buy-button {
-        margin-top: 0.2rem;
-    }
-
-    @media (max-width: 768px) {
-        .catalog-rune-card {
-            min-height: 350px;
+    try {
+        if (activeButton && activeButton.tagName === "BUTTON") {
+            activeButton.disabled = true;
+            activeButton.innerText = "Comprando...";
         }
 
-        .rune-image-wrap {
-            height: 110px;
+        const result = await postJson("/api/buy_item", {
+            item_name: itemName,
+            item_type: itemType,
+            token_price: tokenPrice
+        });
+
+        if (result.success) {
+            if (typeof updateBalanceDisplay === "function" && result.new_balance !== undefined) {
+                updateBalanceDisplay(result.new_balance);
+            }
+
+            if (typeof showMessage === "function") {
+                showMessage(`Compra realizada: ${itemName}`, "success");
+            }
+
+            setTimeout(() => {
+								const btn = document.activeElement;
+								const card = btn.closest(".catalog-card");
+								if (card) card.remove();
+						}, 300);
+            return;
+        }
+
+        if (typeof showMessage === "function") {
+            showMessage("Erro: " + (result.error || "falha na compra"), "error");
+        }
+    } catch (error) {
+        console.error(error);
+        if (typeof showMessage === "function") {
+            showMessage("Erro ao comprar item: " + error.message, "error");
+        }
+    } finally {
+        if (activeButton && activeButton.tagName === "BUTTON") {
+            activeButton.disabled = false;
+            activeButton.innerText = originalText || "Comprar";
         }
     }
-    .item-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 0.75rem;
-    }
-
-    .item-image-container {
-        height: 120px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0.5rem 0 1rem;
-        border-radius: 12px;
-        background: rgba(15, 23, 42, 0.9);
-        border: 1px solid #1f2937;
-    }
-
-    .item-image {
-        max-width: 84px;
-        max-height: 84px;
-        object-fit: contain;
-    }
-
-    .item-name {
-        text-align: center;
-        font-size: 1.05rem;
-        font-weight: 700;
-        color: #f59e0b;
-        margin-bottom: 0.6rem;
-    }
-
-    .item-price {
-        color: #34d399;
-        font-weight: bold;
-        font-size: 1.05rem;
-        text-align: center;
-        margin: 0.7rem 0 1rem;
-    }
-
-    .card.catalog-card {
-        overflow: visible !important;
-    }
-
-    .catalog-card {
-        position: relative;
-        overflow: visible !important;
-    }
-
-    .catalog-card:hover {
-        z-index: 200;
-    }
-
-    .catalog-card .item-image-container {
-        position: relative;
-        overflow: visible;
-        z-index: 1;
-        height: 120px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0.5rem 0 1rem;
-        border-radius: 12px;
-        background: rgba(15, 23, 42, 0.9);
-        border: 1px solid #1f2937;
-        transition: box-shadow 0.2s ease, transform 0.2s ease;
-    }
-
-    .catalog-card:hover .item-image-container {
-        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
-    }
-
-    .catalog-card .item-tooltip {
-        position: fixed;
-        left: 0;
-        top: 0;
-        width: min(320px, calc(100vw - 24px));
-        padding: 14px 16px 16px;
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-        z-index: 9999;
-        transition: opacity 0.12s ease;
-    }
-
-    .catalog-card .item-tooltip.is-visible {
-        opacity: 1;
-        visibility: visible;
-    }
-
-    .catalog-card .tooltip-title {
-        color: #8b7bff;
-        font-weight: 700;
-        font-size: 15px;
-        text-align: center;
-        margin-bottom: 10px;
-        text-shadow: 0 0 6px rgba(139, 123, 255, 0.18);
-    }
-
-    .catalog-card .tooltip-section {
-        margin-top: 8px;
-        padding-top: 8px;
-        border-top: 1px solid rgba(111, 100, 62, 0.35);
-    }
-
-    .catalog-card .tooltip-section:first-of-type {
-        margin-top: 0;
-        padding-top: 0;
-        border-top: none;
-    }
-
-    .catalog-card .tooltip-label {
-        color: #c7a24a;
-        font-weight: 700;
-        margin-bottom: 4px;
-    }
-
-    .catalog-card .tooltip-line {
-        color: #7fb3ff;
-    }
-
-    @media (max-width: 768px) {
-        .catalog-card .item-tooltip {
-            width: min(280px, calc(100vw - 24px));
-        }
-    }
-</style>
+}
+</script>
 {% endblock %}

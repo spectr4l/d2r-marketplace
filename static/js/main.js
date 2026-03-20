@@ -190,6 +190,46 @@ function filterMarketplaceCards() {
     });
 }
 
+function setupTooltips() {
+  const cards = document.querySelectorAll('.catalog-card, .stash-card');
+
+  cards.forEach((card) => {
+    const tooltip = card.querySelector('.tooltip-panel');
+    if (!tooltip) return;
+
+    card.addEventListener('mouseenter', () => {
+      tooltip.classList.add('is-visible');
+    });
+
+    card.addEventListener('mouseleave', () => {
+      tooltip.classList.remove('is-visible');
+    });
+
+    card.addEventListener('mousemove', (event) => {
+      const offset = 16;
+      let left = event.clientX + offset;
+      let top = event.clientY + offset;
+
+      const rect = tooltip.getBoundingClientRect();
+
+      if (left + rect.width > window.innerWidth - 10) {
+        left = event.clientX - rect.width - offset;
+      }
+
+      if (top + rect.height > window.innerHeight - 10) {
+        top = window.innerHeight - rect.height - 10;
+      }
+
+      tooltip.style.left = `${left}px`;
+      tooltip.style.top = `${top}px`;
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  setupTooltips();
+});
+
 function placeTooltip(card) {
     const tooltip = card.querySelector(".item-tooltip");
     if (!tooltip) return;
