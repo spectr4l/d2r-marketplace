@@ -84,7 +84,7 @@ def try_read_items_with_d2lib(save_file):
             "name": str(item.get("name", "Item desconhecido")),
             "item_type": str(item.get("type", "unknown")),
             "quality": str(item.get("quality", "unknown")).lower(),
-            "quantity": int(item.get("quantity", 1)),
+            "quantity": int(item.get("stacks", 1) or 1),
         })
 
     return items
