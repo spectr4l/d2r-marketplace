@@ -10,7 +10,7 @@ from services.marketplace_service import (
     buy_catalog_item,
     import_virtual_item_to_game,
 )
-from services.inventory_service import get_all_characters_and_items
+from services.inventory_service import get_shared_stash_data
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key-change-this")
@@ -274,8 +274,8 @@ def index():
 @app.route("/inventory")
 def inventory():
     save_folder = load_app_config().get("save_folder", "")
-    characters = get_all_characters_and_items(save_folder)
-    return render_template("inventory.html", characters=characters)
+    stash = get_shared_stash_data(save_folder)
+    return render_template("inventory.html", stash=stash)
 
 
 @app.route("/stash")
