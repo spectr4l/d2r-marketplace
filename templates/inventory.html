@@ -1,59 +1,49 @@
 ﻿{% extends "base.html" %}
 
 {% block content %}
-<div style="padding: 20px;">
-    <h2 style="color: #e94560; margin-bottom: 20px;">Shared Stash do D2R</h2>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/inventory.css') }}">
 
-    <div style="background: #16213e; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-        <p style="color: #ccc;">
-            Esta página está lendo o arquivo de stash compartilhado da pasta configurada.
-        </p>
+<div class="inventory-page">
+  <h2>Shared Stash do D2R</h2>
+
+  <div class="inventory-meta">
+    <div><strong>Stash:</strong> {{ stash["stash_name"] }}</div>
+    <div><strong>Arquivo:</strong> {{ stash["stash_file"] or "Não encontrado" }}</div>
+    <div><strong>Itens lidos:</strong> {{ stash["item_count"] }}</div>
+    <div><strong>Status:</strong> {{ stash["read_status"] }}</div>
+  </div>
+
+  {% if stash["items"] %}
+    <div class="inventory-grid">
+      {% for item in stash["items"] %}
+        <div class="stash-item">
+          <div class="stash-item-card quality-{{ item['quality'] }}">
+            <div class="stash-item-name">{{ item["itemName"] }}</div>
+
+            {% if item["quantity"] > 1 %}
+              <div class="stash-item-qty">{{ item["quantity"] }}</div>
+            {% endif %}
+          </div>
+
+          <div class="item-tooltip">
+            {% for line in item["tooltip_lines"] %}
+              <div class="tooltip-line {% if loop.first %}tooltip-title{% endif %}">
+                {{ line }}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
     </div>
+  {% else %}
+    <p>Nenhum item encontrado no shared stash.</p>
+  {% endif %}
 
-    <div style="background: #16213e; padding: 20px; border-radius: 8px; border: 1px solid #0f3460;">
-        <h3 style="color: #e94560; margin-bottom: 10px;">
-            {{ stash["stash_name"] }}
-        </h3>
-
-        <p style="color: #ccc; margin-bottom: 6px;">
-            <strong>Arquivo:</strong> {{ stash["stash_file"] or "Não encontrado" }}
-        </p>
-
-        <p style="color: #ccc; margin-bottom: 6px;">
-            <strong>Itens lidos:</strong> {{ stash["item_count"] }}
-        </p>
-
-        <p style="color: {{ '#ff9f43' if stash.get('raw_error') else '#4ecdc4' }}; margin-bottom: 10px;">
-            {{ stash["read_status"] }}
-        </p>
-
-        {% if stash["items"] %}
-            <div style="margin-top: 15px;">
-                {% for item in stash["items"] %}
-                <div style="background: #1a1a2e; padding: 10px; border-radius: 6px; margin-bottom: 8px;">
-                    <div><strong>{{ item["name"] }}</strong></div>
-										<div style="color: #aaa;">Quantidade: {{ item["quantity"] }}</div>
-                    <div style="color: #aaa;">Tipo: {{ item["item_type"] }}</div>
-                    <div style="color: #aaa;">Qualidade: {{ item["quality"] }}</div>
-                </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div style="margin-top: 15px; padding: 12px; background: #1a1a2e; border-radius: 6px; color: #888;">
-                Nenhum item encontrado no shared stash.
-            </div>
-        {% endif %}
-
-        {% if stash.get("raw_error") %}
-        <details style="margin-top: 12px;">
-            <summary style="cursor: pointer; color: #ff9f43;">
-                Ver detalhes técnicos
-            </summary>
-            <div style="margin-top: 10px; padding: 12px; background: #101522; border-radius: 6px; color: #bbb; word-break: break-word;">
-                {{ stash["raw_error"] }}
-            </div>
-        </details>
-        {% endif %}
-    </div>
+  {% if stash.get("raw_error") %}
+    <details class="inventory-error">
+      <summary>Ver detalhes técnicos</summary>
+      <pre>{{ stash["raw_error"] }}</pre>
+    </details>
+  {% endif %}
 </div>
 {% endblock %}

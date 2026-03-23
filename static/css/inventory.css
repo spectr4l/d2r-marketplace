@@ -1,0 +1,101 @@
+.inventory-page {
+  padding: 20px;
+}
+
+.inventory-meta {
+  margin-bottom: 20px;
+  line-height: 1.8;
+}
+
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.stash-item {
+  position: relative;
+}
+
+.stash-item-card {
+  position: relative;
+  min-height: 72px;
+  padding: 10px;
+  border: 1px solid #4f4120;
+  background: #151515;
+  color: #ddd;
+  cursor: default;
+}
+
+.stash-item-name {
+  font-weight: bold;
+  line-height: 1.3;
+}
+
+.stash-item-qty {
+  position: absolute;
+  right: 8px;
+  bottom: 6px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.item-tooltip {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: calc(100% + 8px);
+  min-width: 280px;
+  max-width: 380px;
+  padding: 12px;
+  border: 1px solid #7a6730;
+  background: rgba(0, 0, 0, 0.96);
+  color: #cfcfcf;
+  z-index: 9999;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+}
+
+.stash-item:hover .item-tooltip {
+  display: block;
+}
+
+.tooltip-line {
+  margin-bottom: 4px;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.tooltip-line:last-child {
+  margin-bottom: 0;
+}
+
+.tooltip-title {
+  color: #c7b377;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.quality-none .stash-item-name,
+.quality-normal .stash-item-name {
+  color: #d0d0d0;
+}
+
+.quality-magic .stash-item-name {
+  color: #6fa8ff;
+}
+
+.quality-rare .stash-item-name {
+  color: #fff06a;
+}
+
+.quality-set .stash-item-name {
+  color: #51c451;
+}
+
+.quality-unique .stash-item-name {
+  color: #c7a46a;
+}
+
+.inventory-error {
+  margin-top: 20px;
+}
