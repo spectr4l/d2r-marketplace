@@ -1,6 +1,7 @@
 import os
 
 from modules.d2_reader import try_read_items_with_d2lib
+from services.trade_rules import is_tradeable_item
 
 
 def find_shared_stash_file(save_folder):
@@ -51,6 +52,7 @@ def get_shared_stash_data(save_folder):
 
     try:
         items = try_read_items_with_d2lib(stash_file)
+        items = [item for item in items if is_tradeable_item(item)]
 
         return {
             "stash_name": "Shared Stash Softcore",
