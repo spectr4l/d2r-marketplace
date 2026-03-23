@@ -99,3 +99,22 @@
 .inventory-error {
   margin-top: 20px;
 }
+
+.inventory-status {
+  margin: 12px 0 16px;
+  padding: 12px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.inventory-status-success {
+  background: rgba(78, 205, 196, 0.12);
+  border: 1px solid rgba(78, 205, 196, 0.45);
+  color: #4ecdc4;
+}
+
+.inventory-status-error {
+  background: rgba(255, 107, 107, 0.12);
+  border: 1px solid rgba(255, 107, 107, 0.45);
+  color: #ff6b6b;
+}

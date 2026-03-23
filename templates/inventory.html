@@ -10,7 +10,15 @@
     <div><strong>Stash:</strong> {{ stash["stash_name"] }}</div>
     <div><strong>Arquivo:</strong> {{ stash["stash_file"] or "Não encontrado" }}</div>
     <div><strong>Itens lidos:</strong> {{ stash["item_count"] }}</div>
-    <div><strong>Status:</strong> {{ stash["read_status"] }}</div>
+    <div><strong>Status:</strong> {% if stash.get("raw_error") %}
+      <div class="inventory-status inventory-status-error">
+        {{ stash["read_status"] }}
+      </div>
+    {% else %}
+      <div class="inventory-status inventory-status-success">
+        {{ stash["read_status"] }}
+      </div>
+    {% endif %}</div>
   </div>
 
   {% if stash["items"] %}
