@@ -23,7 +23,7 @@
             <strong>Itens lidos:</strong> {{ stash["item_count"] }}
         </p>
 
-        <p style="color: #4ecdc4; margin-bottom: 10px;">
+        <p style="color: {{ '#ff9f43' if stash.get('raw_error') else '#4ecdc4' }}; margin-bottom: 10px;">
             {{ stash["read_status"] }}
         </p>
 

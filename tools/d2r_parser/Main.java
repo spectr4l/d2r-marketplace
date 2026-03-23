@@ -195,7 +195,13 @@ public class Main {
         } catch (IOException e) {
             System.out.println("{\"error\":\"Erro ao ler arquivo: " + esc(e.toString()) + "\"}");
         } catch (Exception e) {
-            System.out.println("{\"error\":\"" + esc(e.toString()) + "\"}");
+            String error = e.toString();
+
+            if (error.contains("IndexOutOfBoundsException")) {
+                System.out.println("{\"error\":\"MODDED_ITEMS_DETECTED\"}");
+            } else {
+                System.out.println("{\"error\":\"" + esc(error) + "\"}");
+            }
         }
     }
 }

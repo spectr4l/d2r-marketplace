@@ -8,8 +8,8 @@ def find_shared_stash_file(save_folder):
         return None
 
     candidates = [
-        "SharedStashSoftCoreV2.d2i",
         "ModernSharedStashSoftCoreV2.d2i",
+        "SharedStashSoftCoreV2.d2i",        
     ]
 
     for file_name in candidates:
@@ -26,6 +26,12 @@ def build_readable_status(error_text):
 
     if "Java não encontrado" in error_text:
         return "Java não encontrado no sistema."
+
+    if "MODDED_ITEMS_DETECTED" in error_text:
+        return "O stash possui itens modded/incompatíveis. Eles não são suportados nesta versão do sistema."
+
+    if "IndexOutOfBoundsException" in error_text:
+        return "O stash possui itens modded/incompatíveis. Eles não são suportados nesta versão do sistema."
 
     return f"Leitura ainda não disponível neste formato: {error_text}"
 
