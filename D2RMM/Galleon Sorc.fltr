@@ -1,0 +1,11 @@
+{
+    "name": "Galleon Sorc",
+    "rules": [
+        {
+            "name": "Rule 0",
+            "enabled": true,
+            "ruleType": "show",
+            "filterEtherealSocketed": false
+        }
+    ]
+}

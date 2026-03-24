@@ -1,0 +1,9 @@
+{
+    "Version": 1,
+    "Presets Loaded": true,
+    "Profiles": {
+        "Walami": "sPECops",
+        "Spectroh": "sPECops",
+        "Galleon": "Spectroh01"
+    }
+}
