@@ -265,7 +265,7 @@ function createNewStackableFromTemplate(template, targetCode, amount) {
   const amount = Number(process.argv[5] || 1);
   const createMode = process.argv.includes('--create');
 
-  if (!input || !output || !rawTarget || !Number.isFinite(amount) || amount < 0) {
+  if (!input || !output || !rawTarget || !Number.isFinite(amount) || amount === 0) {
     usage();
     process.exit(1);
   }
@@ -307,34 +307,65 @@ function createNewStackableFromTemplate(template, targetCode, amount) {
 
   let found = findItem(items, target);
 
-  if (found) {
-    console.log(`✔ Encontrado: ${prettyName(found)} (${found.type})`);
-    console.log(`Quantidade atual: ${found.amount_in_shared_stash ?? 0}`);
-    found.amount_in_shared_stash = amount;
-    console.log(`Nova quantidade: ${amount}`);
-  } else if (createMode) {
-    console.log(`⚠ Item não encontrado no stash: ${target.displayName} (${target.code})`);
-    console.log('Tentando criar via clone de template...');
+	if (found) {
+		console.log(`✔ Encontrado: ${prettyName(found)} (${found.type})`);
 
-    const template = pickTemplateForCreate(items, target.code);
-    if (!template) {
-      console.log('❌ Não foi encontrado nenhum template stackable para clonar.');
-      process.exit(1);
-    }
+		const currentAmount = Number(found.amount_in_shared_stash ?? 0);
+		const newAmount = currentAmount + amount;
+		const MAX_STACK = 99;
 
-    console.log(`Template usado: ${prettyName(template)} (${template.type})`);
+		if (newAmount > MAX_STACK) {
+			throw new Error(
+				`Limite máximo excedido para ${target.displayName}. Máx=${MAX_STACK}, atual=${currentAmount}, tentativa=${newAmount}`
+			);
+		}
 
-    const created = createNewStackableFromTemplate(template, target.code, amount);
-    items.push(created);
+		console.log(`Quantidade atual: ${currentAmount}`);
+		console.log(`Delta: ${amount}`);
+		console.log(`Nova quantidade: ${newAmount}`);
 
-    console.log(`✔ Item criado: ${prettyName(created)} (${created.type})`);
-    console.log(`Quantidade inicial: ${created.amount_in_shared_stash}`);
-  } else {
-    console.log(`❌ Item não encontrado no stash stackable atual: ${target.displayName} (${target.code})`);
-    console.log('Esse script só altera itens já existentes, a menos que você use --create.');
-    listItems(items);
-    process.exit(1);
-  }
+		if (newAmount < 0) {
+			throw new Error(
+				`Quantidade insuficiente para ${target.displayName}. Atual=${currentAmount}, delta=${amount}`
+			);
+		}
+
+		if (newAmount === 0) {
+			const index = items.indexOf(found);
+			if (index >= 0) {
+				items.splice(index, 1);
+				console.log(`✔ Stack removido: ${target.displayName}`);
+			}
+		} else {
+			found.amount_in_shared_stash = newAmount;
+		}
+	} else if (createMode) {
+		if (amount <= 0) {
+			throw new Error(`Não é possível criar stack com quantidade ${amount}`);
+		}
+
+		console.log(`⚠ Item não encontrado no stash: ${target.displayName} (${target.code})`);
+		console.log('Tentando criar via clone de template...');
+
+		const template = pickTemplateForCreate(items, target.code);
+		if (!template) {
+			console.log('❌ Não foi encontrado nenhum template stackable para clonar.');
+			process.exit(1);
+		}
+
+		console.log(`Template usado: ${prettyName(template)} (${template.type})`);
+
+		const created = createNewStackableFromTemplate(template, target.code, amount);
+		items.push(created);
+
+		console.log(`✔ Item criado: ${prettyName(created)} (${created.type})`);
+		console.log(`Quantidade inicial: ${created.amount_in_shared_stash}`);
+	} else {
+		console.log(`❌ Item não encontrado no stash stackable atual: ${target.displayName} (${target.code})`);
+		console.log('Esse script só altera itens já existentes, a menos que você use --create.');
+		listItems(items);
+		process.exit(1);
+	}
 
   const rewrittenItems = await itemsMod.writeItems(items, 105, constants, {
     extendedStash: false,

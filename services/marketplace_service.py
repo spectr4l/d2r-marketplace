@@ -88,12 +88,16 @@ def _looks_like_rune(item_name, item_type):
     return name.endswith(" rune")
 
 
-def buy_catalog_item(item_name, item_type, token_price, save_folder):
+def buy_catalog_item(item_name, item_type, token_price, save_folder, qty=1):
     if not isinstance(token_price, int):
         raise ValueError("token_price precisa ser inteiro")
-
     if token_price <= 0:
         raise ValueError("token_price precisa ser maior que zero")
+
+    qty = int(qty)
+
+    if qty <= 0:
+        raise ValueError("Quantidade inválida")
 
     normalized_item_type = _normalize_item_type(item_type)
 
@@ -103,8 +107,9 @@ def buy_catalog_item(item_name, item_type, token_price, save_folder):
             f"Recebido: item_name={item_name!r}, item_type={item_type!r}"
         )
 
+    total_price = token_price * qty
     balance = get_token_balance()
-    if balance < token_price:
+    if balance < total_price:
         raise ValueError("Saldo insuficiente")
 
     stash_path = find_shared_stash_file(save_folder)
@@ -114,11 +119,10 @@ def buy_catalog_item(item_name, item_type, token_price, save_folder):
     write_item_to_shared_stash(
         stash_path=stash_path,
         item_name=item_name,
-        amount=1,
+        amount=qty,
     )
 
     item_id = str(uuid.uuid4())
-
     add_virtual_item(
         item_id=item_id,
         name=item_name,
@@ -128,23 +132,23 @@ def buy_catalog_item(item_name, item_type, token_price, save_folder):
             {
                 "name": item_name,
                 "type": normalized_item_type,
-                "quantity": 1,
+                "quantity": qty,
                 "delivered_to_stash": True,
             },
             ensure_ascii=False,
         ),
         source="purchased",
-        token_price=token_price,
+        token_price=total_price,
     )
 
     mark_item_as_imported(item_id)
-    update_token_balance(-token_price)
+    update_token_balance(-total_price)
 
     add_transaction(
         "buy_import",
         item_id,
-        -token_price,
-        f"Comprado e entregue no shared stash: {item_name}"
+        -total_price,
+        f"Comprado e entregue no shared stash: {qty}x {item_name}"
     )
 
     return {

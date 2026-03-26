@@ -334,6 +334,7 @@ def buy_item():
         item_name = data.get("item_name")
         item_type = data.get("item_type")
         token_price = int(data.get("token_price"))
+        qty = int(data.get("qty", 1))
 
         save_folder = load_app_config().get("save_folder", "")
 
@@ -342,6 +343,7 @@ def buy_item():
             item_type=item_type,
             token_price=token_price,
             save_folder=save_folder,
+            qty=qty,
         )
 
         return jsonify({

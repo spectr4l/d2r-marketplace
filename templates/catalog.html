@@ -51,10 +51,20 @@
 								<div class="catalog-card-title">{{ item_name }}</div>
 								<div class="catalog-card-price">{{ token_price }} tokens</div>
 
-								<button class="btn btn-primary buy-btn"
-												onclick="buyCatalogItem('{{ item_name }}', 'runa', {{ token_price }})">
-										Comprar
-								</button>
+								<div class="catalog-buy-controls">
+									<input
+											type="number"
+											min="1"
+											value="1"
+											class="catalog-qty-input"
+											id="qty-{{ item_name|lower }}"
+									>
+
+									<button class="btn btn-primary buy-btn"
+													onclick="buyCatalogItem('{{ item_name }}', 'runa', {{ token_price }}, document.getElementById('qty-{{ item_name|lower }}').value, this)">
+											Comprar
+									</button>
+							</div>
 
 								<div class="tooltip-panel rune-tooltip">
 										<strong>{{ item_name }} Rune</strong>
@@ -75,8 +85,10 @@
 </div>
 </section>
 <script>
-async function buyCatalogItem(itemName, itemType, tokenPrice) {
-    const activeButton = document.activeElement;
+async function buyCatalogItem(itemName, itemType, tokenPrice, qty = 1, buttonEl = null) {
+    qty = Math.max(1, parseInt(qty, 10) || 1);
+
+    const activeButton = buttonEl || document.activeElement;
     const originalText = activeButton && activeButton.tagName === "BUTTON"
         ? activeButton.innerText
         : null;
@@ -88,10 +100,11 @@ async function buyCatalogItem(itemName, itemType, tokenPrice) {
         }
 
         const result = await postJson("/api/buy_item", {
-            item_name: itemName,
-            item_type: itemType,
-            token_price: tokenPrice
-        });
+						item_name: itemName,
+						item_type: itemType,
+						token_price: tokenPrice,
+						qty: qty
+				});
 
         if (result.success) {
             if (typeof updateBalanceDisplay === "function" && result.new_balance !== undefined) {
@@ -99,12 +112,11 @@ async function buyCatalogItem(itemName, itemType, tokenPrice) {
             }
 
             if (typeof showMessage === "function") {
-                showMessage(`Compra realizada: ${itemName}`, "success");
+                showMessage(`Compra realizada: ${qty}x ${itemName}`, "success");
             }
 
             setTimeout(() => {
-								const btn = document.activeElement;
-								const card = btn.closest(".catalog-card");
+								const card = activeButton?.closest(".catalog-card");
 								if (card) card.remove();
 						}, 300);
             return;
