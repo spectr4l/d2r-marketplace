@@ -10,7 +10,7 @@ from services.marketplace_service import (
     buy_catalog_item,
     import_virtual_item_to_game,
 )
-from services.inventory_service import get_shared_stash_data
+from services.inventory_service import load_inventory_stash
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key-change-this")
@@ -274,9 +274,8 @@ def index():
 @app.route("/inventory")
 def inventory():
     save_folder = load_app_config().get("save_folder", "")
-    stash = get_shared_stash_data(save_folder)
+    stash = load_inventory_stash(save_folder)
     return render_template("inventory.html", stash=stash)
-
 
 @app.route("/stash")
 def marketplace():
@@ -336,27 +335,34 @@ def buy_item():
         item_type = data.get("item_type")
         token_price = int(data.get("token_price"))
 
-        result = buy_catalog_item(item_name, item_type, token_price)
+        save_folder = load_app_config().get("save_folder", "")
+
+        result = buy_catalog_item(
+            item_name=item_name,
+            item_type=item_type,
+            token_price=token_price,
+            save_folder=save_folder,
+        )
 
         return jsonify({
             "success": True,
             "new_balance": result["new_balance"],
             "item_id": result["item_id"],
+            "stash_path": result["stash_path"],
         })
     except ValueError as e:
         return jsonify({"success": False, "error": str(e)}), 400
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
-
 @app.route("/api/import_item", methods=["POST"])
 def import_item():
     try:
         data = request.get_json()
         item_id = data.get("item_id")
-        target_character = data.get("target_character")
 
-        import_virtual_item_to_game(item_id, target_character)
+        save_folder = load_app_config().get("save_folder", "")
+        import_virtual_item_to_game(item_id, save_folder)
 
         return jsonify({"success": True})
     except Exception as e:

@@ -105,6 +105,27 @@ def add_virtual_item(item_id, name, item_type, quality, attributes, source, expo
     conn.commit()
     conn.close()
 
+def get_virtual_item_by_id(item_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM virtual_items WHERE id = ?", (item_id,))
+    item = cursor.fetchone()
+    conn.close()
+
+    if not item:
+        return None
+
+    return {
+        "id": item["id"],
+        "name": item["name"],
+        "item_type": item["item_type"],
+        "quality": item["quality"],
+        "attributes": item["attributes"],
+        "status": item["status"],
+        "token_price": item["token_price"],
+        "source": item["source"],
+        "exported_from": item["exported_from"],
+    }
 
 def get_virtual_items(status="available"):
     conn = get_connection()

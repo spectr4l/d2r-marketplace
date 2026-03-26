@@ -1,76 +1,153 @@
 import os
-
-from modules.d2_reader import try_read_items_with_d2lib
-from services.trade_rules import is_tradeable_item
+from modules.d2_reader import read_shared_stash
 
 
-def find_shared_stash_file(save_folder):
+RUNE_QUALITY_MAP = {
+    "r01": "normal",
+    "r02": "normal",
+    "r03": "normal",
+    "r04": "normal",
+    "r05": "normal",
+    "r06": "normal",
+    "r07": "normal",
+    "r08": "normal",
+    "r09": "normal",
+    "r10": "normal",
+    "r11": "normal",
+    "r12": "normal",
+    "r13": "normal",
+    "r14": "normal",
+    "r15": "normal",
+    "r16": "normal",
+    "r17": "normal",
+    "r18": "normal",
+    "r19": "normal",
+    "r20": "normal",
+    "r21": "normal",
+    "r22": "normal",
+    "r23": "normal",
+    "r24": "normal",
+    "r25": "normal",
+    "r26": "normal",
+    "r27": "normal",
+    "r28": "normal",
+    "r29": "normal",
+    "r30": "normal",
+    "r31": "normal",
+    "r32": "normal",
+    "r33": "normal",
+}
+
+
+def find_shared_stash_file(save_folder: str):
     if not save_folder or not os.path.isdir(save_folder):
         return None
 
     candidates = [
         "SharedStashSoftCoreV2.d2i",
         "ModernSharedStashSoftCoreV2.d2i",
+        "SharedStashHardCoreV2.d2i",
+        "ModernSharedStashHardCoreV2.d2i",
     ]
 
-    for file_name in candidates:
-        full_path = os.path.join(save_folder, file_name)
+    for filename in candidates:
+        full_path = os.path.join(save_folder, filename)
         if os.path.isfile(full_path):
             return full_path
 
     return None
 
 
-def build_readable_status(error_text):
-    if "Unsupported version" in error_text:
-        return "A versão do Shared Stash não é suportada pelo parser atual."
+def _normalize_quality(item: dict) -> str:
+    item_type = str(item.get("type") or "").lower()
 
-    if "Java não encontrado" in error_text:
-        return "Java não encontrado no sistema."
+    if item_type in RUNE_QUALITY_MAP:
+        return RUNE_QUALITY_MAP[item_type]
 
-    if "MODDED_ITEMS_DETECTED" in error_text:
-        return "O stash possui itens modded/incompatíveis. Eles não são suportados nesta versão do sistema."
+    quality = item.get("quality")
+    if quality is None:
+        return "normal"
 
-    if "IndexOutOfBoundsException" in error_text:
-        return "O stash possui itens modded/incompatíveis. Eles não são suportados nesta versão do sistema."
+    # caso venha numérico
+    if isinstance(quality, int):
+        if quality == 7:
+            return "unique"
+        if quality == 6:
+            return "rare"
+        if quality == 5:
+            return "set"
+        if quality == 4:
+            return "magic"
+        return "normal"
 
-    return f"Leitura ainda não disponível neste formato: {error_text}"
+    return str(quality).lower()
 
 
-def get_shared_stash_data(save_folder):
-    stash_file = find_shared_stash_file(save_folder)
+def _build_tooltip_lines(item: dict) -> list:
+    lines = []
 
-    if not stash_file:
+    name = item.get("name") or item.get("type") or "Unknown Item"
+    lines.append(name)
+
+    amount = int(item.get("amount") or 1)
+    if amount > 1:
+        lines.append(f"Quantidade: {amount}")
+
+    item_type = item.get("type")
+    if item_type:
+        lines.append(f"Código: {item_type}")
+
+    categories = item.get("categories") or []
+    if categories:
+        lines.append("Categorias: " + ", ".join(categories))
+
+    return lines
+
+
+def _convert_stackable_item(item: dict) -> dict:
+    return {
+        "itemName": item.get("name") or item.get("type") or "Unknown Item",
+        "quality": _normalize_quality(item),
+        "quantity": int(item.get("amount") or 1),
+        "tooltip_lines": _build_tooltip_lines(item),
+        "code": item.get("type"),
+        "raw": item,
+    }
+
+
+def load_inventory_stash(save_folder: str) -> dict:
+    stash_path = find_shared_stash_file(save_folder)
+
+    if not stash_path:
         return {
-            "stash_name": "Shared Stash Softcore",
+            "stash_name": "Shared Stash",
             "stash_file": None,
-            "items": [],
             "item_count": 0,
-            "read_status": "Arquivo SharedStashSoftCoreV2.d2i não encontrado.",
+            "read_status": "Arquivo shared stash não encontrado",
+            "items": [],
             "raw_error": None,
         }
 
     try:
-        items = try_read_items_with_d2lib(stash_file)
-        items = [item for item in items if is_tradeable_item(item)]
+        parsed = read_shared_stash(stash_path)
+        stackables = parsed.get("stackables", [])
+        items = [_convert_stackable_item(item) for item in stackables]
 
         return {
-            "stash_name": "Shared Stash Softcore",
-            "stash_file": stash_file,
-            "items": items,
+            "stash_name": "Shared Stash",
+            "stash_file": stash_path,
             "item_count": len(items),
-            "read_status": "Itens carregados com sucesso",
+            "read_status": "Leitura realizada com sucesso via reader JS",
+            "items": items,
             "raw_error": None,
         }
 
     except Exception as e:
-        error_text = repr(e)
-
         return {
-            "stash_name": "Shared Stash Softcore",
-            "stash_file": stash_file,
-            "items": [],
+            "stash_name": "Shared Stash",
+            "stash_file": stash_path,
             "item_count": 0,
-            "read_status": build_readable_status(error_text),
-            "raw_error": error_text,
+            "read_status": "Erro ao ler o shared stash",
+            "items": [],
+            "raw_error": str(e),
         }
