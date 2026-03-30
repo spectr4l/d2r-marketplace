@@ -6,24 +6,38 @@
 <div class="inventory-page">
   <h2>Shared Stash do D2R</h2>
 
+  <div id="message-area"></div>
+
   <div class="inventory-meta">
     <div><strong>Stash:</strong> {{ stash["stash_name"] }}</div>
     <div><strong>Arquivo:</strong> {{ stash["stash_file"] or "Não encontrado" }}</div>
     <div><strong>Itens lidos:</strong> {{ stash["item_count"] }}</div>
-    <div><strong>Status:</strong> {% if stash.get("raw_error") %}
-      <div class="inventory-status inventory-status-error">
-        {{ stash["read_status"] }}
-      </div>
-    {% else %}
-      <div class="inventory-status inventory-status-success">
-        {{ stash["read_status"] }}
-      </div>
-    {% endif %}</div>
+    <div><strong>Status:</strong>
+      {% if stash.get("raw_error") %}
+        <div class="inventory-status inventory-status-error">
+          {{ stash["read_status"] }}
+        </div>
+      {% else %}
+        <div class="inventory-status inventory-status-success">
+          {{ stash["read_status"] }}
+        </div>
+      {% endif %}
+    </div>
   </div>
+
+  {% set rune_names = [
+		"el","eld","tir","nef","eth","ith","tal","ral","ort","thul",
+		"amn","sol","shael","dol","hel","io","lum","ko","fal","lem",
+		"pul","um","mal","ist","gul","vex","ohm","lo","sur","ber",
+		"jah","cham","zod"
+	] %}
 
   {% if stash["items"] %}
     <div class="inventory-grid">
       {% for item in stash["items"] %}
+        {% set normalized_name = item["itemName"]|lower|trim %}
+					{% set is_rune = normalized_name in rune_names or normalized_name.endswith(" rune") %}
+
         <div class="stash-item">
           <div class="stash-item-card quality-{{ item['quality'] }}">
             <div class="stash-item-name">{{ item["itemName"] }}</div>
@@ -31,6 +45,25 @@
             {% if item["quantity"] > 1 %}
               <div class="stash-item-qty">{{ item["quantity"] }}</div>
             {% endif %}
+
+            <div class="stash-item-actions">
+							{% if is_rune %}
+								<button
+									type="button"
+									class="sell-item-button"
+									onclick='openSellModal({{ item|tojson|safe }})'>
+									Vender
+								</button>
+							{% else %}
+								<button
+									type="button"
+									class="sell-item-button is-disabled"
+									disabled
+									title="Na v1, apenas runas podem ser anunciadas">
+									Vender
+								</button>
+							{% endif %}
+						</div>
           </div>
 
           <div class="item-tooltip">
@@ -54,4 +87,49 @@
     </details>
   {% endif %}
 </div>
+
+<div id="sell-modal" class="sell-modal">
+  <div class="sell-modal-backdrop" onclick="closeSellModal()"></div>
+
+  <div class="sell-modal-content">
+    <div class="sell-modal-header">
+      <h3>Anunciar runa</h3>
+    </div>
+
+    <div class="sell-modal-body">
+      <div class="sell-modal-row">
+        <strong>Item:</strong>
+        <span id="sell-item-name">-</span>
+      </div>
+
+      <div class="sell-modal-row">
+        <strong>Disponível:</strong>
+        <span id="sell-item-available">0</span>
+      </div>
+
+      <div class="sell-form-group">
+        <label for="sell-quantity">Quantidade</label>
+        <input id="sell-quantity" type="number" min="1" step="1" value="1">
+      </div>
+
+      <div class="sell-form-group">
+        <label for="sell-unit-price">Preço por unidade</label>
+        <input id="sell-unit-price" type="number" min="1" step="1" value="1">
+      </div>
+    </div>
+
+    <div class="sell-modal-actions">
+      <button type="button" class="sell-confirm-button" onclick="submitSellListing()">
+        Anunciar
+      </button>
+      <button type="button" class="sell-cancel-button" onclick="closeSellModal()">
+        Cancelar
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.INVENTORY_STASH_FILE = {{ stash["stash_file"]|tojson }};
+</script>
 {% endblock %}

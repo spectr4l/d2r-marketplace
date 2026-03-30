@@ -318,3 +318,135 @@ function initializeItemTooltips() {
 }
 
 document.addEventListener("DOMContentLoaded", initializeItemTooltips);
+
+let selectedSellItem = null;
+
+const RUNE_NAMES = new Set([
+    "el","eld","tir","nef","eth","ith","tal","ral","ort","thul",
+    "amn","sol","shael","dol","hel","io","lum","ko","fal","lem",
+    "pul","um","mal","ist","gul","vex","ohm","lo","sur","ber",
+    "jah","cham","zod"
+]);
+
+function isRuneItem(item) {
+    const name = String(item?.itemName || "").trim().toLowerCase();
+    return RUNE_NAMES.has(name) || name.endsWith(" rune");
+}
+
+function openSellModal(item) {
+    if (!item || !isRuneItem(item)) {
+        showMessage("Na v1, apenas runas podem ser anunciadas.", "error");
+        return;
+    }
+
+    selectedSellItem = item;
+
+    const modal = document.getElementById("sell-modal");
+    if (!modal) {
+        showMessage("Modal de venda não encontrado.", "error");
+        return;
+    }
+
+    const availableQty = Number(item.quantity || 1);
+
+    document.getElementById("sell-item-name").textContent = item.itemName;
+    document.getElementById("sell-item-available").textContent = availableQty;
+
+    const qtyInput = document.getElementById("sell-quantity");
+    qtyInput.value = 1;
+    qtyInput.max = availableQty;
+
+    document.getElementById("sell-unit-price").value = 1;
+
+    modal.classList.add("is-open");
+    document.body.classList.add("modal-open");
+}
+
+function closeSellModal() {
+    selectedSellItem = null;
+
+    const modal = document.getElementById("sell-modal");
+    if (modal) {
+        modal.classList.remove("is-open");
+    }
+
+    document.body.classList.remove("modal-open");
+}
+
+async function submitSellListing() {
+    if (!selectedSellItem) {
+        showMessage("Nenhum item selecionado.", "error");
+        return;
+    }
+
+    const quantity = Number(document.getElementById("sell-quantity")?.value || 0);
+    const unitPrice = Number(document.getElementById("sell-unit-price")?.value || 0);
+    const availableQty = Number(selectedSellItem.quantity || 1);
+
+    if (!Number.isInteger(quantity) || quantity < 1) {
+        showMessage("Quantidade inválida.", "error");
+        return;
+    }
+
+    if (quantity > availableQty) {
+        showMessage("Quantidade maior que a disponível.", "error");
+        return;
+    }
+
+    if (!Number.isInteger(unitPrice) || unitPrice < 1) {
+        showMessage("Preço unitário inválido.", "error");
+        return;
+    }
+
+    try {
+        const res = await postJson("/api/list_item", {
+            item: selectedSellItem,
+            quantity,
+            unit_price: unitPrice,
+            stash_file: window.INVENTORY_STASH_FILE || null
+        });
+
+        if (!res || res.error) {
+            showMessage(res?.error || "Erro ao anunciar item.", "error");
+            return;
+        }
+
+        showMessage("Item anunciado com sucesso!", "success");
+        closeSellModal();
+        setTimeout(() => window.location.reload(), 700);
+
+    } catch (err) {
+        showMessage(err?.message || "Erro ao anunciar item.", "error");
+        console.error("submitSellListing error:", err);
+    }
+}
+
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+        closeSellModal();
+    }
+});
+
+async function cancelListing(listingId) {
+    if (!listingId) {
+        showMessage("Listing inválido.", "error");
+        return;
+    }
+
+    try {
+        const res = await postJson("/api/cancel_listing", {
+            listing_id: listingId
+        });
+
+        if (!res || res.error) {
+            showMessage(res?.error || "Erro ao cancelar anúncio.", "error");
+            return;
+        }
+
+        showMessage("Anúncio cancelado com sucesso.", "success");
+        setTimeout(() => window.location.reload(), 700);
+    } catch (err) {
+        showMessage(err?.message || "Erro ao cancelar anúncio.", "error");
+        console.error("cancelListing error:", err);
+    }
+}

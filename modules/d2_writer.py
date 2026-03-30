@@ -55,52 +55,30 @@ def resolve_rune_code(item_name: str) -> str:
     raise ValueError(f"Rune não suportada para escrita automática: {item_name}")
 
 def write_item_to_shared_stash(stash_path: str, item_name: str, amount: int = 1) -> None:
-    if not os.path.isfile(stash_path):
-        raise FileNotFoundError(f"Shared stash não encontrado: {stash_path}")
-
-    if not os.path.isfile(PATCHER_FILE):
-        raise FileNotFoundError(f"Patcher Node não encontrado: {PATCHER_FILE}")
-
-    if amount <= 0:
-        raise ValueError("amount precisa ser maior que zero")
+    if amount == 0:
+        raise ValueError("amount não pode ser zero")
 
     item_code = resolve_rune_code(item_name)
 
-    fd, temp_output = tempfile.mkstemp(suffix=".d2i")
-    os.close(fd)
+    temp_output = stash_path + ".tmp"
+
+    command = [
+        NODE_CMD,
+        PATCHER_FILE,
+        stash_path,
+        temp_output,
+        item_code,
+        str(amount)
+    ]
+
+    # só cria item se for positivo
+    if amount > 0:
+        command.append("--create")
 
     try:
-        command = [
-            NODE_CMD,
-            PATCHER_FILE,
-            stash_path,
-            temp_output,
-            item_code,
-            str(amount),
-            "--create",
-        ]
-
-        result = subprocess.run(
-            command,
-            cwd=PARSER_DIR,
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-        )
-
-        if result.returncode != 0:
-            raise RuntimeError(
-                "Falha ao escrever no shared stash.\n"
-                f"stdout={result.stdout}\n"
-                f"stderr={result.stderr}"
-            )
-
+        subprocess.run(command, check=True)
         os.replace(temp_output, stash_path)
-
-    finally:
+    except subprocess.CalledProcessError as e:
         if os.path.exists(temp_output):
-            try:
-                os.remove(temp_output)
-            except OSError:
-                pass
+            os.remove(temp_output)
+        raise RuntimeError(f"Erro ao modificar stash: {e}")

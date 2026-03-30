@@ -1,146 +1,49 @@
 ﻿{% extends "base.html" %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/stash.css') }}">
-{% endblock %}
-
 {% block content %}
-<section class="stash-page">
-<h2 class="page-title">Market</h2>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/stash.css') }}">
 
-<div class="panel">
-    <p>
-        Veja os itens disponíveis no mercado interno, acompanhe preços e gerencie suas transações com tokens.
-    </p>
-</div>
+<div class="stash-page">
+  <h2>Auction House</h2>
 
-<div class="panel">
-    <div class="toolbar">
-        <input type="text" id="marketplace-search" placeholder="Buscar item..." onkeyup="filterMarketplaceCards()">
+  <div id="message-area"></div>
 
-        <select id="marketplace-filter" onchange="filterMarketplaceCards()">
-            <option value="all">Todos</option>
-            <option value="runa">Runas</option>
-            <option value="item">Itens</option>
-        </select>
-
-        <select id="marketplace-sort" onchange="sortMarketplaceCards()">
-            <option value="name-asc">Nome A-Z</option>
-            <option value="name-desc">Nome Z-A</option>
-            <option value="price-asc">Menor preço</option>
-            <option value="price-desc">Maior preço</option>
-        </select>
-    </div>
-</div>
-
-<div class="grid" id="marketplace-grid">
-    {% if listings and listings|length > 0 %}
-        {% set rune_order = [
-            'El', 'Eld', 'Tir', 'Nef', 'Eth', 'Ith', 'Tal', 'Ral', 'Ort', 'Thul',
-            'Amn', 'Sol', 'Shael', 'Dol', 'Hel', 'Io', 'Lum', 'Ko', 'Fal', 'Lem',
-            'Pul', 'Um', 'Mal', 'Ist', 'Gul', 'Vex', 'Ohm', 'Lo', 'Sur', 'Ber',
-            'Jah', 'Cham', 'Zod'
-        ] %}
-
-        {% for item in listings %}
-            {% set item_name = item.item_name if item.item_name is defined else item.name %}
-            {% set item_type = item.item_type if item.item_type is defined else 'item' %}
-            {% set item_price = item.token_price if item.token_price is defined else item.price %}
-            {% set item_status = item.status if item.status is defined else 'available' %}
-            {% set seller = item.seller_name if item.seller_name is defined else 'Marketplace' %}
-            {% set created_at = item.created_at if item.created_at is defined else None %}
-            {% set rune_tier = rune_order.index(item_name) + 1 if item_name in rune_order else 0 %}
-            {% set is_rune = item_type|lower == 'runa' or item_type|lower == 'rune' or item_name in rune_order %}
-
-            <div class="stash-card"
-								 data-name="{{ item_name }}"
-								 data-type="{{ 'runa' if is_rune else 'item' }}"
-								 data-price="{{ item_price }}">
-
-								<div class="item-image-container">
-										<img src="{{ url_for('static', filename='img/runes/' ~ item_name|lower ~ '.webp') }}"
-												 alt="{{ item_name }}"
-												 class="item-image">
-								</div>
-
-								<div class="stash-card-meta">
-										{{ 'Runa' if is_rune else item_type }}
-										{% if is_rune and rune_tier > 0 %} - Tier {{ rune_tier }}{% endif %}
-								</div>
-
-								<div class="stash-card-title">{{ item_name }}</div>
-								<div class="stash-card-price">{{ item_price }} tokens</div>
-
-								{% if item_status|lower == 'available' %}
-										<button class="btn btn-primary"
-														onclick="sellStashItem('{{ item.id if item.id is defined else item.item_id }}', this)">
-												Vender
-										</button>
-								{% else %}
-										<button class="btn" disabled>Indisponível</button>
-								{% endif %}
-
-								{% if is_rune %}
-								<div class="tooltip-panel rune-tooltip">
-										<strong>{{ item_name }} Rune</strong>
-										<div><strong>Arma</strong></div>
-										<div>{{ get_rune_tooltip(item_name, 'weapon') }}</div>
-										<div><strong>Armadura / Elmo</strong></div>
-										<div>{{ get_rune_tooltip(item_name, 'armor') }}</div>
-										<div><strong>Escudo</strong></div>
-										<div>{{ get_rune_tooltip(item_name, 'shield') }}</div>
-								</div>
-								{% endif %}
-						</div>
-        {% endfor %}
-    {% else %}
-        <div class="panel empty-state">
-            Nenhum item disponível no market no momento.
+  {% if sold_now %}
+    <div class="stash-sales-feedback">
+      {% for sold in sold_now %}
+        <div class="sale-success">
+          Vendido: {{ sold.name }} x{{ sold.quantity }} por {{ sold.total_tokens }} token(s)
         </div>
-    {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if listed_items %}
+    <div class="stash-listings-grid">
+      {% for item in listed_items %}
+        <div class="stash-listing-card">
+          <div class="stash-listing-name">{{ item.name }}</div>
+
+          <div class="stash-listing-meta">
+            <div><strong>Quantidade:</strong> {{ item.quantity }}</div>
+            <div><strong>Preço/unidade:</strong> {{ item.unit_price }}</div>
+            <div><strong>Total:</strong> {{ item.quantity * item.unit_price }}</div>
+            <div><strong>Status:</strong> Anunciado</div>
+          </div>
+
+          <div class="stash-listing-actions">
+            <button
+              type="button"
+              class="cancel-listing-button"
+              onclick="cancelListing('{{ item.id }}')">
+              Cancelar
+            </button>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>Nenhum anúncio ativo no momento.</p>
+  {% endif %}
 </div>
-
-<script>
-    async function sellStashItem(itemId, button) {
-        try {
-            button.disabled = true;
-
-            const result = await postJson("/api/sell_item", {
-                item_id: itemId
-            });
-
-            if (result.success) {
-                if (typeof updateBalanceDisplay === "function" && result.new_balance !== undefined) {
-                    updateBalanceDisplay(result.new_balance);
-                }
-
-                if (typeof showMessage === "function") {
-                    showMessage("Item vendido com sucesso", "success");
-                }
-
-                const card = button.closest(".stash-card");
-                if (card) {
-                    card.remove();
-                }
-
-                return;
-            }
-
-            if (typeof showMessage === "function") {
-                showMessage("Erro: " + (result.error || "falha na venda"), "error");
-            }
-
-            button.disabled = false;
-        } catch (error) {
-            console.error(error);
-
-            if (typeof showMessage === "function") {
-                showMessage("Erro ao vender item: " + error.message, "error");
-            }
-
-            button.disabled = false;
-        }
-    }
-</script>
-</section>
 {% endblock %}

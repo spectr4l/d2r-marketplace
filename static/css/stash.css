@@ -1,59 +1,57 @@
-.stash-page .stash-card {
-  background: #16213e;
-  border-radius: 10px;
-  padding: 1rem;
-  position: relative;
+.stash-listings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
 }
 
-.stash-page .stash-card-title {
-  color: #e94560;
-  font-weight: bold;
-  font-size: 1.1rem;
-  margin-bottom: 0.5rem;
+.stash-listing-card {
+  padding: 16px;
+  border: 1px solid #5a4a22;
+  background: #111;
+  color: #ddd;
 }
 
-.stash-page .stash-card-meta {
-  color: #aaa;
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
+.stash-listing-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #d8c690;
+  margin-bottom: 12px;
 }
 
-.stash-page .stash-card-price {
-  color: #4ecdc4;
-  margin-bottom: 1rem;
-}
-
-.stash-page .tooltip-panel {
-  position: fixed;
-  display: none;
-  z-index: 9999;
-  width: 320px;
-  background: #0b0f1a;
-  border: 1px solid #444;
-  border-radius: 8px;
-  padding: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-  pointer-events: none;
-	opacity: 0;
-  transition: opacity 0.15s ease;
-	font-family: "Courier New", monospace;
-  color: #d4af37;
-}
-
-.stash-page .tooltip-panel.is-visible {
-  display: block;
-	opacity: 1;
-}
-.stash-page .item-image-container {
+.stash-listing-meta {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 0.75rem;
-  min-height: 64px;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.stash-page .item-image {
-  max-width: 48px;
-  max-height: 48px;
-  object-fit: contain;
+.stash-listing-actions {
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cancel-listing-button {
+  padding: 6px 10px;
+  border: 1px solid #7a6730;
+  background: #201a0f;
+  color: #d8c690;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cancel-listing-button:hover {
+  background: #2c2415;
+}
+
+.stash-sales-feedback {
+  margin-bottom: 16px;
+}
+
+.sale-success {
+  margin-bottom: 8px;
+  padding: 10px 12px;
+  border: 1px solid #2d6a39;
+  background: #112417;
+  color: #8ee19f;
 }

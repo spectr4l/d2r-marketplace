@@ -1,8 +1,22 @@
 from flask import Flask, render_template, request, jsonify
 import os
 import json
+import uuid
+import random
+from datetime import datetime, UTC
 
-from database.db import init_database, get_token_balance
+from database.db import (
+    init_database,
+    get_connection,
+    get_token_balance,
+    get_listed_items,
+    get_listed_item_by_id,
+    mark_listing_cancelled,
+    process_due_listings,
+    get_connection,
+)
+from modules.d2_writer import write_item_to_shared_stash
+
 from services.marketplace_service import (
     list_available_items,
     export_item_to_marketplace,
@@ -278,10 +292,15 @@ def inventory():
     return render_template("inventory.html", stash=stash)
 
 @app.route("/stash")
-def marketplace():
-    virtual_items = list_available_items()
-    balance = get_token_balance()
-    return render_template("stash.html", listings=virtual_items, balance=balance)
+def stash():
+    sold_now = process_due_listings()
+    listed_items = get_listed_items()
+
+    return render_template(
+        "stash.html",
+        listed_items=listed_items,
+        sold_now=sold_now,
+    )
 
 
 @app.route("/catalog")
@@ -369,7 +388,40 @@ def import_item():
         return jsonify({"success": True})
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
+     
+@app.route("/api/cancel_listing", methods=["POST"])
+def cancel_listing():
+    try:
+        data = request.get_json() or {}
+        listing_id = data.get("listing_id")
 
+        if not listing_id:
+            return jsonify({"error": "listing_id não informado"}), 400
+
+        item = get_listed_item_by_id(listing_id)
+        if not item:
+            return jsonify({"error": "Anúncio não encontrado"}), 404
+
+        if item["status"] != "listed":
+            return jsonify({"error": "Anúncio não está mais ativo"}), 400
+
+        # devolve a runa ao shared stash
+        stash_file = get_save_folder() + "/ModernSharedStashSoftCoreV2.d2i"
+        write_item_to_shared_stash(
+            stash_file,
+            item["name"],
+            amount=item["quantity"]
+        )
+
+        ok = mark_listing_cancelled(listing_id)
+        if not ok:
+            return jsonify({"error": "Não foi possível cancelar o anúncio"}), 400
+
+        return jsonify({"success": True})
+
+    except Exception as e:
+        print("ERRO /api/cancel_listing:", repr(e))
+        return jsonify({"error": str(e)}), 500 
 
 @app.route("/api/update_save_folder", methods=["POST"])
 def update_save_folder():
@@ -392,6 +444,57 @@ def update_save_folder():
         return jsonify({"success": False, "error": "Pasta não encontrada"}), 404
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
+        
+@app.route("/api/list_item", methods=["POST"])
+def list_item():
+    data = request.get_json()
+
+    item = data.get("item")
+    quantity = int(data.get("quantity", 0))
+    unit_price = int(data.get("unit_price", 0))
+    stash_file = data.get("stash_file")
+
+    if not item or quantity < 1 or unit_price < 1:
+        return jsonify({"error": "Dados inválidos"}), 400
+
+    item_name = item.get("itemName")
+
+    if not item_name:
+        return jsonify({"error": "Item inválido"}), 400
+
+    try:
+        # 🧨 1. REMOVE DO .d2i
+        write_item_to_shared_stash(
+            stash_file,
+            item_name,
+            amount=-quantity
+        )
+
+        # ⏱️ 2. DEFINE TEMPO DE VENDA (5–10s)
+        sell_after = random.randint(5, 10)
+
+        # 💾 3. SALVA NO BANCO
+        conn = get_connection()
+
+        conn.execute("""
+            INSERT INTO virtual_items
+            (id, name, quantity, unit_price, status, listed_at, sell_after_seconds)
+            VALUES (?, ?, ?, ?, 'listed', ?, ?)
+        """, (
+            str(uuid.uuid4()),
+            item_name,
+            quantity,
+            unit_price,
+            datetime.now(UTC).isoformat(),
+            sell_after
+        ))
+
+        conn.commit()
+
+        return jsonify({"success": True})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500       
 
 
 if __name__ == "__main__":
