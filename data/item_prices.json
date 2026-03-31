@@ -1,17 +1,87 @@
 {
-    "runes": {
-        "El": 1, "Eld": 2, "Tir": 3, "Nef": 4, "Eth": 5,
-        "Ith": 6, "Tal": 7, "Ral": 8, "Ort": 9, "Thul": 1,
-        "Amn": 1, "Sol": 2, "Shael": 2, "Dol": 3,
-        "Hel": 4, "Io": 4, "Lum": 5, "Ko": 6,
-        "Fal": 7, "Lem": 8, "Pul": 9, "Um": 10,
-        "Mal": 12, "Ist": 15, "Gul": 18, "Vex": 21,
-        "Ohm": 25, "Lo": 30, "Sur": 35, "Ber": 40,
-        "Jah": 45, "Cham": 50, "Zod": 60
-    },
-    "uniques": {
-        "Harlequin Crest": 300,
-        "The Grandfather": 250,
-        "Windforce": 350
-    }
+  "runes": {
+    "El": 1,
+    "Eld": 2,
+    "Tir": 3,
+    "Nef": 4,
+    "Eth": 5,
+    "Ith": 6,
+    "Tal": 7,
+    "Ral": 8,
+    "Ort": 9,
+    "Thul": 10,
+    "Amn": 15,
+    "Sol": 20,
+    "Shael": 25,
+    "Dol": 30,
+    "Hel": 40,
+    "Io": 45,
+    "Lum": 50,
+    "Ko": 60,
+    "Fal": 70,
+    "Lem": 80,
+    "Pul": 90,
+    "Um": 100,
+    "Mal": 120,
+    "Ist": 150,
+    "Gul": 180,
+    "Vex": 210,
+    "Ohm": 250,
+    "Lo": 300,
+    "Sur": 350,
+    "Ber": 400,
+    "Jah": 450,
+    "Cham": 500,
+    "Zod": 6000
+  },
+  "gems": {
+    "Chipped Amethyst": 120,
+    "Chipped Diamond": 120,
+    "Chipped Emerald": 120,
+    "Chipped Ruby": 120,
+    "Chipped Sapphire": 120,
+    "Chipped Topaz": 120,
+    "Chipped Skull": 150,
+
+    "Flawed Amethyst": 250,
+    "Flawed Diamond": 250,
+    "Flawed Emerald": 250,
+    "Flawed Ruby": 250,
+    "Flawed Sapphire": 250,
+    "Flawed Topaz": 250,
+    "Flawed Skull": 320,
+
+    "Amethyst": 500,
+    "Diamond": 500,
+    "Emerald": 500,
+    "Ruby": 500,
+    "Sapphire": 500,
+    "Topaz": 500,
+    "Skull": 650,
+
+    "Flawless Amethyst": 1200,
+    "Flawless Diamond": 1200,
+    "Flawless Emerald": 1200,
+    "Flawless Ruby": 1200,
+    "Flawless Sapphire": 1200,
+    "Flawless Topaz": 1200,
+    "Flawless Skull": 1500,
+
+    "Perfect Amethyst": 3000,
+    "Perfect Diamond": 3000,
+    "Perfect Emerald": 3000,
+    "Perfect Ruby": 3000,
+    "Perfect Sapphire": 3000,
+    "Perfect Topaz": 3000,
+    "Perfect Skull": 3600
+  },
+  "potions": {
+    "Rejuvenation Potion": 800,
+    "Full Rejuvenation Potion": 1800
+  },
+  "uniques": {
+    "Harlequin Crest": 300,
+    "The Grandfather": 250,
+    "Windforce": 350
+  }
 }

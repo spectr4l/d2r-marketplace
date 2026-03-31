@@ -250,35 +250,51 @@ def inject_global_data():
 
 
 def load_token_prices():
-    if os.path.exists(TOKEN_PRICES_FILE):
-        with open(TOKEN_PRICES_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
+    if not os.path.exists(TOKEN_PRICES_FILE):
+        raise RuntimeError("Arquivo item_prices.json não encontrado.")
 
-    default_prices = {
-        "runes": {
-            "El": 1, "Eld": 2, "Tir": 3, "Nef": 4, "Eth": 5,
-            "Ith": 6, "Tal": 7, "Ral": 8, "Ort": 9, "Thul": 10,
-            "Amn": 15, "Sol": 20, "Shael": 25, "Dol": 30,
-            "Hel": 40, "Io": 45, "Lum": 50, "Ko": 60,
-            "Fal": 70, "Lem": 80, "Pul": 90, "Um": 100,
-            "Mal": 120, "Ist": 150, "Gul": 180, "Vex": 210,
-            "Ohm": 250, "Lo": 300, "Sur": 350, "Ber": 400,
-            "Jah": 450, "Cham": 500, "Zod": 600
-        },
-        "uniques": {
-            "Harlequin Crest": 300,
-            "The Grandfather": 250,
-            "Windforce": 350
-        }
-    }
+    with open(TOKEN_PRICES_FILE, "r", encoding="utf-8") as f:
+        return json.load(f)
 
-    os.makedirs(DATA_DIR, exist_ok=True)
+def get_market_reference_price(item_name: str, item_kind: str | None = None) -> int:
+    prices = load_token_prices()
 
-    with open(TOKEN_PRICES_FILE, "w", encoding="utf-8") as f:
-        json.dump(default_prices, f, indent=2, ensure_ascii=False)
+    normalized_name = str(item_name or "").strip()
+    normalized_kind = str(item_kind or "").strip().lower()
 
-    return default_prices
+    if normalized_kind == "rune" and normalized_name.endswith(" Rune"):
+        rune_key = normalized_name.replace(" Rune", "")
+        return int(prices.get("runes", {}).get(rune_key, 0))
 
+    if normalized_kind == "gem":
+        return int(prices.get("gems", {}).get(normalized_name, 0))
+
+    if normalized_kind == "potion":
+        return int(prices.get("potions", {}).get(normalized_name, 0))
+
+    if normalized_kind == "unique":
+        return int(prices.get("uniques", {}).get(normalized_name, 0))
+
+    return 0
+
+def calculate_sell_after_seconds(unit_price: int, reference_price: int) -> int:
+    if reference_price <= 0:
+        return random.randint(20, 40)
+
+    ratio = unit_price / reference_price
+
+    if ratio <= 0.80:
+        return random.randint(2, 5)
+    if ratio <= 0.95:
+        return random.randint(5, 10)
+    if ratio <= 1.05:
+        return random.randint(10, 20)
+    if ratio <= 1.25:
+        return random.randint(20, 40)
+    if ratio <= 1.60:
+        return random.randint(40, 90)
+
+    return random.randint(120, 240)
 
 @app.route("/")
 def index():
@@ -479,8 +495,15 @@ def list_item():
             amount=-quantity
         )
 
-        # ⏱️ 2. DEFINE TEMPO DE VENDA (5–10s)
-        sell_after = random.randint(5, 10)
+        reference_price = get_market_reference_price(
+            item_name=item_name,
+            item_kind=item_kind,
+        )
+
+        sell_after = calculate_sell_after_seconds(
+            unit_price=unit_price,
+            reference_price=reference_price,
+        )
 
         # 💾 3. SALVA NO BANCO
         conn = get_connection()
