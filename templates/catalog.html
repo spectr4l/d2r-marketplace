@@ -116,9 +116,8 @@ async function buyCatalogItem(itemName, itemType, tokenPrice, qty = 1, buttonEl 
             }
 
             setTimeout(() => {
-								const card = activeButton?.closest(".catalog-card");
-								if (card) card.remove();
-						}, 300);
+								window.location.reload();
+						}, 700);
             return;
         }
 
