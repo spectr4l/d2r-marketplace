@@ -277,24 +277,34 @@ def get_market_reference_price(item_name: str, item_kind: str | None = None) -> 
 
     return 0
 
-def calculate_sell_after_seconds(unit_price: int, reference_price: int) -> int:
+def calculate_sell_after_seconds(unit_price: int, reference_price: int, item_kind: str | None = None) -> int:
     if reference_price <= 0:
-        return random.randint(20, 40)
+        base_seconds = random.randint(30 * 60, 90 * 60)  # 30–90 min
+    else:
+        ratio = unit_price / reference_price
 
-    ratio = unit_price / reference_price
+        if ratio <= 0.80:
+            base_seconds = random.randint(3 * 60, 10 * 60)              # 3–10 min
+        elif ratio <= 0.95:
+            base_seconds = random.randint(10 * 60, 25 * 60)             # 10–25 min
+        elif ratio <= 1.05:
+            base_seconds = random.randint(25 * 60, 60 * 60)             # 25–60 min
+        elif ratio <= 1.25:
+            base_seconds = random.randint(60 * 60, 3 * 60 * 60)         # 1–3 h
+        elif ratio <= 1.60:
+            base_seconds = random.randint(3 * 60 * 60, 8 * 60 * 60)     # 3–8 h
+        else:
+            base_seconds = random.randint(8 * 60 * 60, 24 * 60 * 60)    # 8–24 h
 
-    if ratio <= 0.80:
-        return random.randint(2, 5)
-    if ratio <= 0.95:
-        return random.randint(5, 10)
-    if ratio <= 1.05:
-        return random.randint(10, 20)
-    if ratio <= 1.25:
-        return random.randint(20, 40)
-    if ratio <= 1.60:
-        return random.randint(40, 90)
+    kind = str(item_kind or "").strip().lower()
 
-    return random.randint(120, 240)
+    if kind == "potion":
+        return max(2 * 60, int(base_seconds * 0.45))
+
+    if kind == "gem":
+        return max(5 * 60, int(base_seconds * 0.75))
+
+    return base_seconds
 
 @app.route("/")
 def index():
@@ -503,6 +513,7 @@ def list_item():
         sell_after = calculate_sell_after_seconds(
             unit_price=unit_price,
             reference_price=reference_price,
+            item_kind=item_kind,
         )
 
         # 💾 3. SALVA NO BANCO
