@@ -1,25 +1,31 @@
-🛒 D2R Single Player Market
+# D2R Marketplace (Offline Auction House)
 
-Sistema local para gerenciamento e visualização de itens de personagens no Diablo II: Resurrected (Single Player).
+Simula uma Auction House para Diablo II: Resurrected em modo single player.
 
-Permite ler automaticamente os arquivos de save (.d2s) e visualizar o inventário dos personagens de forma organizada.
+O projeto permite listar itens do shared stash, definir preços e vendê-los automaticamente ao longo do tempo, criando a sensação de um mercado ativo.
 
-🚀 Funcionalidades
+---
 
-📦 Leitura de inventário direto dos saves do D2R
+## ✨ Funcionalidades
 
-👤 Listagem de personagens
+- Leitura do shared stash (.d2i)
+- Suporte a itens stackables:
+  - Runas
+  - Gemas
+  - Poções de rejuvenation
+- Sistema de venda estilo Auction House
+- Economia baseada em tokens
+- Preço dinâmico baseado em mercado
+- Venda automática com tempo variável
+- Cancelamento de anúncios
+- Histórico de transações
 
-🧾 Exibição de itens (nome, tipo, qualidade)
+---
 
-⚙️ Configuração da pasta de saves
+## 🚀 Como rodar
 
-🔍 Parser automático via Java
+```bash
+pip install -r requirements.txt
+python app.py
 
-🛠️ Tecnologias
-
-Python
-
-Flask (backend/web)
-
-Java (parser dos arquivos .d2s)
+http://localhost:5000
