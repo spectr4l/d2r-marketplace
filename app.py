@@ -24,7 +24,7 @@ from services.marketplace_service import (
     buy_catalog_item,
     import_virtual_item_to_game,
 )
-from services.inventory_service import load_inventory_stash
+from services.inventory_service import load_inventory_stash, find_shared_stash_file
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key-change-this")
@@ -405,11 +405,17 @@ def cancel_listing():
         if item["status"] != "listed":
             return jsonify({"error": "Anúncio não está mais ativo"}), 400
 
-        # devolve a runa ao shared stash
-        stash_file = get_save_folder() + "/ModernSharedStashSoftCoreV2.d2i"
+        # devolve o item ao shared stash
+        save_folder = load_app_config().get("save_folder", "")
+        stash_file = find_shared_stash_file(save_folder)
+
+        if not stash_file:
+            return jsonify({"error": "Shared stash não encontrado"}), 404
+
         write_item_to_shared_stash(
             stash_file,
-            item["name"],
+            item_name=item["name"],
+            item_code=item.get("item_code"),
             amount=item["quantity"]
         )
 
@@ -458,15 +464,18 @@ def list_item():
         return jsonify({"error": "Dados inválidos"}), 400
 
     item_name = item.get("itemName")
+    item_code = item.get("code")
+    item_kind = item.get("kind")
 
-    if not item_name:
+    if not item_name or not item_code:
         return jsonify({"error": "Item inválido"}), 400
 
     try:
         # 🧨 1. REMOVE DO .d2i
         write_item_to_shared_stash(
             stash_file,
-            item_name,
+            item_name=item_name,
+            item_code=item_code,
             amount=-quantity
         )
 
@@ -478,11 +487,12 @@ def list_item():
 
         conn.execute("""
             INSERT INTO virtual_items
-            (id, name, quantity, unit_price, status, listed_at, sell_after_seconds)
-            VALUES (?, ?, ?, ?, 'listed', ?, ?)
+            (id, name, item_code, quantity, unit_price, status, listed_at, sell_after_seconds)
+            VALUES (?, ?, ?, ?, ?, 'listed', ?, ?)
         """, (
             str(uuid.uuid4()),
             item_name,
+            item_code,
             quantity,
             unit_price,
             datetime.now(UTC).isoformat(),

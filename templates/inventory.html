@@ -25,45 +25,39 @@
     </div>
   </div>
 
-  {% set rune_names = [
-		"el","eld","tir","nef","eth","ith","tal","ral","ort","thul",
-		"amn","sol","shael","dol","hel","io","lum","ko","fal","lem",
-		"pul","um","mal","ist","gul","vex","ohm","lo","sur","ber",
-		"jah","cham","zod"
-	] %}
 
   {% if stash["items"] %}
     <div class="inventory-grid">
       {% for item in stash["items"] %}
-        {% set normalized_name = item["itemName"]|lower|trim %}
-					{% set is_rune = normalized_name in rune_names or normalized_name.endswith(" rune") %}
-
+        
         <div class="stash-item">
           <div class="stash-item-card quality-{{ item['quality'] }}">
-            <div class="stash-item-name">{{ item["itemName"] }}</div>
+            <div class="stash-item-header">
+              <img
+                class="stash-item-icon"
+                src="{{ item['icon'] }}"
+                alt="{{ item['itemName'] }}"
+                loading="lazy"
+                onerror="this.src='{{ url_for('static', filename='img/items/default_item.webp') }}'"
+              >
 
-            {% if item["quantity"] > 1 %}
-              <div class="stash-item-qty">{{ item["quantity"] }}</div>
-            {% endif %}
+              <div class="stash-item-text">
+                <div class="stash-item-name">{{ item["itemName"] }}</div>
+
+                {% if item["quantity"] > 1 %}
+                  <div class="stash-item-qty">{{ item["quantity"] }}</div>
+                {% endif %}
+              </div>
+            </div>
 
             <div class="stash-item-actions">
-							{% if is_rune %}
-								<button
-									type="button"
-									class="sell-item-button"
-									onclick='openSellModal({{ item|tojson|safe }})'>
-									Vender
-								</button>
-							{% else %}
-								<button
-									type="button"
-									class="sell-item-button is-disabled"
-									disabled
-									title="Na v1, apenas runas podem ser anunciadas">
-									Vender
-								</button>
-							{% endif %}
-						</div>
+              <button
+                type="button"
+                class="sell-item-button"
+                onclick='openSellModal({{ item|tojson|safe }})'>
+                Vender
+              </button>
+            </div>
           </div>
 
           <div class="item-tooltip">
@@ -93,7 +87,7 @@
 
   <div class="sell-modal-content">
     <div class="sell-modal-header">
-      <h3>Anunciar runa</h3>
+      <h3>Anunciar item</h3>
     </div>
 
     <div class="sell-modal-body">

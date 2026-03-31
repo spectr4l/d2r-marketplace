@@ -27,17 +27,37 @@
   cursor: default;
 }
 
+.stash-item-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stash-item-icon {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.stash-item-text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .stash-item-name {
   font-weight: bold;
   line-height: 1.3;
+  word-break: break-word;
 }
 
 .stash-item-qty {
-  position: absolute;
-  right: 8px;
-  bottom: 6px;
+  position: static;
   font-weight: bold;
   color: #fff;
+  font-size: 13px;
 }
 
 .item-tooltip {

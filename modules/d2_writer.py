@@ -1,13 +1,13 @@
 import os
 import subprocess
-import tempfile
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PARSER_DIR = os.path.join(BASE_DIR, "tools", "d2r_parser")
 PATCHER_FILE = os.path.join(PARSER_DIR, "patch_stackable.cjs")
 NODE_CMD = "node"
 
-RUNE_NAME_TO_CODE = {
+ITEM_NAME_TO_CODE = {
+    # Runes
     "el": "r01",
     "eld": "r02",
     "tir": "r03",
@@ -41,24 +41,84 @@ RUNE_NAME_TO_CODE = {
     "jah": "r31",
     "cham": "r32",
     "zod": "r33",
+
+    # Gemas
+    "chipped amethyst": "gcv",
+    "chipped diamond": "gcw",
+    "chipped emerald": "gcg",
+    "chipped ruby": "gcr",
+    "chipped sapphire": "gcb",
+    "chipped topaz": "gcy",
+    "chipped skull": "skc",
+
+    "flawed amethyst": "gfv",
+    "flawed diamond": "gfw",
+    "flawed emerald": "gfg",
+    "flawed ruby": "gfr",
+    "flawed sapphire": "gfb",
+    "flawed topaz": "gfy",
+    "flawed skull": "skf",
+
+    "amethyst": "gsv",
+    "diamond": "gsw",
+    "emerald": "gsg",
+    "ruby": "gsr",
+    "sapphire": "gsb",
+    "topaz": "gsy",
+    "skull": "sku",
+
+    "flawless amethyst": "gzv",
+    "flawless diamond": "glw",
+    "flawless emerald": "glg",
+    "flawless ruby": "glr",
+    "flawless sapphire": "glb",
+    "flawless topaz": "gly",
+    "flawless skull": "skl",
+
+    "perfect amethyst": "gpv",
+    "perfect diamond": "gpw",
+    "perfect emerald": "gpg",
+    "perfect ruby": "gpr",
+    "perfect sapphire": "gpb",
+    "perfect topaz": "gpy",
+    "perfect skull": "skz",
+
+    # Poções
+    "rejuvenation potion": "rvs",
+    "full rejuvenation potion": "rvl",
 }
+
+SUPPORTED_ITEM_CODES = set(ITEM_NAME_TO_CODE.values())
+
 
 def _normalize_item_name(item_name: str) -> str:
     return str(item_name or "").strip().lower().replace(" rune", "").strip()
 
-def resolve_rune_code(item_name: str) -> str:
-    normalized = _normalize_item_name(item_name)
 
-    if normalized in RUNE_NAME_TO_CODE:
-        return RUNE_NAME_TO_CODE[normalized]
+def resolve_item_code(item_name: str = None, item_code: str = None) -> str:
+    normalized_code = str(item_code or "").strip().lower()
+    if normalized_code:
+        if normalized_code in SUPPORTED_ITEM_CODES:
+            return normalized_code
+        raise ValueError(f"Item não suportado para escrita automática: {item_code}")
 
-    raise ValueError(f"Rune não suportada para escrita automática: {item_name}")
+    normalized_name = _normalize_item_name(item_name)
+    if normalized_name in ITEM_NAME_TO_CODE:
+        return ITEM_NAME_TO_CODE[normalized_name]
 
-def write_item_to_shared_stash(stash_path: str, item_name: str, amount: int = 1) -> None:
+    raise ValueError(f"Item não suportado para escrita automática: {item_name}")
+
+
+def write_item_to_shared_stash(
+    stash_path: str,
+    item_name: str = None,
+    amount: int = 1,
+    item_code: str = None
+) -> None:
     if amount == 0:
         raise ValueError("amount não pode ser zero")
 
-    item_code = resolve_rune_code(item_name)
+    resolved_item_code = resolve_item_code(item_name=item_name, item_code=item_code)
 
     temp_output = stash_path + ".tmp"
 
@@ -67,11 +127,10 @@ def write_item_to_shared_stash(stash_path: str, item_name: str, amount: int = 1)
         PATCHER_FILE,
         stash_path,
         temp_output,
-        item_code,
+        resolved_item_code,
         str(amount)
     ]
 
-    # só cria item se for positivo
     if amount > 0:
         command.append("--create")
 

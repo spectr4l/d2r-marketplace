@@ -321,21 +321,9 @@ document.addEventListener("DOMContentLoaded", initializeItemTooltips);
 
 let selectedSellItem = null;
 
-const RUNE_NAMES = new Set([
-    "el","eld","tir","nef","eth","ith","tal","ral","ort","thul",
-    "amn","sol","shael","dol","hel","io","lum","ko","fal","lem",
-    "pul","um","mal","ist","gul","vex","ohm","lo","sur","ber",
-    "jah","cham","zod"
-]);
-
-function isRuneItem(item) {
-    const name = String(item?.itemName || "").trim().toLowerCase();
-    return RUNE_NAMES.has(name) || name.endsWith(" rune");
-}
-
 function openSellModal(item) {
-    if (!item || !isRuneItem(item)) {
-        showMessage("Na v1, apenas runas podem ser anunciadas.", "error");
+    if (!item) {
+        showMessage("Item inválido.", "error");
         return;
     }
 

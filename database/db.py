@@ -30,24 +30,26 @@ def init_database():
     """)
 
     cursor.execute("""
-            CREATE TABLE IF NOT EXISTS virtual_items (
-                id TEXT PRIMARY KEY,
-                name TEXT NOT NULL,
-                item_type TEXT,
-                quality TEXT,
-                level INTEGER,
-                attributes TEXT,
-                source TEXT,
-                exported_from TEXT,
-                purchased_at TIMESTAMP,
-                token_price INTEGER DEFAULT 0,
-                status TEXT DEFAULT 'available',
-                quantity INTEGER DEFAULT 1,
-                unit_price INTEGER DEFAULT 0,
-                listed_at TIMESTAMP,
-                sell_after_seconds INTEGER
-            )
-        """)
+        CREATE TABLE IF NOT EXISTS virtual_items (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            item_code TEXT,
+            item_kind TEXT,
+            item_type TEXT,
+            quality TEXT,
+            level INTEGER,
+            attributes TEXT,
+            source TEXT,
+            exported_from TEXT,
+            purchased_at TIMESTAMP,
+            token_price INTEGER DEFAULT 0,
+            status TEXT DEFAULT 'available',
+            quantity INTEGER DEFAULT 1,
+            unit_price INTEGER DEFAULT 0,
+            listed_at TIMESTAMP,
+            sell_after_seconds INTEGER
+        )
+    """)
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS transactions (
@@ -119,7 +121,7 @@ def get_listed_item_by_id(item_id):
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT id, name, quantity, unit_price, listed_at, sell_after_seconds, status
+        SELECT id, name, item_code, item_kind, quantity, unit_price, listed_at, sell_after_seconds, status
         FROM virtual_items
         WHERE id = ?
     """, (item_id,))
@@ -133,11 +135,13 @@ def get_listed_item_by_id(item_id):
     return {
         "id": row[0],
         "name": row[1],
-        "quantity": row[2] or 1,
-        "unit_price": row[3] or 0,
-        "listed_at": row[4],
-        "sell_after_seconds": row[5] or 0,
-        "status": row[6],
+        "item_code": row[2],
+        "item_kind": row[3],
+        "quantity": row[4] or 1,
+        "unit_price": row[5] or 0,
+        "listed_at": row[6],
+        "sell_after_seconds": row[7] or 0,
+        "status": row[8],
     }
 
 
