@@ -1,0 +1,80 @@
+## 🧿 D2R Market – Offline Auction House for Diablo II: Resurrected
+
+Tired of managing your stash manually or losing track of valuable items?
+
+**D2R Market** is a lightweight offline tool that brings an *Auction House experience* to Diablo II: Resurrected single-player.
+
+---
+
+## ⚡ What it does
+
+* 📦 Scan your shared stash automatically
+* 🛒 Buy items from a built-in market
+* 💰 List your own items for sale
+* 🧮 Manage a simple token-based economy
+* ⚙️ Works completely offline
+
+---
+
+## 🎯 Why use it?
+
+* No more manual stash tracking
+* Makes single-player feel more dynamic
+* Adds a sense of progression and trading
+* Designed specifically for solo players
+
+---
+
+## 🖥️ How it works
+
+1. Set your D2R save folder
+2. Load your shared stash
+3. Browse the market or list your items
+4. Buy, sell, and manage your inventory
+
+---
+
+## 🧩 Features
+
+* Rune market with tier system
+* Shared stash reader
+* Item listing system
+* Token balance system
+* Clean and simple UI
+
+---
+
+## ☕ Support the project
+
+D2R Market is free and made for the community.
+
+If it has improved your experience, consider supporting it:
+
+👉 https://ko-fi.com/SEU_USUARIO
+
+Even a small contribution helps keep the project alive.
+
+---
+
+## 📌 Notes
+
+* Designed for **single-player only**
+* No connection to Battle.net
+* Safe to use offline
+
+---
+
+## 🚀 Download
+
+(Coloque aqui o link quando subir)
+
+---
+
+## 🧠 Future plans
+
+* More item categories
+* Expanded market system
+* UI improvements
+* Quality-of-life features
+
+---
