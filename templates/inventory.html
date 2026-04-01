@@ -8,14 +8,14 @@
 <section class="inventory-page">
   <div class="panel inventory-header">
     <div>
-      <h2 class="section-title">Shared Stash do D2R</h2>
+      <h2 class="section-title">D2R Shared Stash</h2>
       <p class="inventory-subtitle">
-        Visualize os itens lidos do seu stash e anuncie no mercado os que deseja vender.
+        View the items you've read from your stash and list the ones you want to sell on the marketplace.
       </p>
     </div>
 
     <div class="inventory-summary">
-      <span class="badge">{{ stash["item_count"] }} item(ns)</span>
+      <span class="badge">{{ stash["item_count"] }} item</span>
     </div>
   </div>
 
@@ -27,12 +27,12 @@
       </div>
 
       <div class="meta-box">
-        <span class="meta-label">Arquivo</span>
-        <strong>{{ stash["stash_file"] or "Não encontrado" }}</strong>
+        <span class="meta-label">Archive</span>
+        <strong>{{ stash["stash_file"] or "Not Found" }}</strong>
       </div>
 
       <div class="meta-box">
-        <span class="meta-label">Itens lidos</span>
+        <span class="meta-label">Item count</span>
         <strong>{{ stash["item_count"] }}</strong>
       </div>
 
@@ -54,8 +54,8 @@
   {% if stash["items"] %}
     <div class="panel inventory-section">
       <div class="inventory-section-header">
-        <h3 class="inventory-block-title">Itens disponíveis</h3>
-        <span class="badge">Prontos para anúncio</span>
+        <h3 class="inventory-block-title">Available items</h3>
+        <span class="badge">Ready for listing</span>
       </div>
 
       <div class="inventory-grid">
@@ -85,7 +85,7 @@
                   type="button"
                   class="btn sell-item-button"
                   onclick='openSellModal({{ item|tojson|safe }})'>
-                  Anunciar
+                  Sell
                 </button>
               </div>
             </div>
@@ -103,14 +103,14 @@
     </div>
   {% else %}
     <div class="panel inventory-empty-state">
-      <p>Nenhum item encontrado no shared stash.</p>
-      <span>Quando a leitura funcionar corretamente, os itens aparecerão aqui.</span>
+      <p>No items found in the shared stash.</p>
+      <span>When the reading function works correctly, the items will appear here.</span>
     </div>
   {% endif %}
 
   {% if stash.get("raw_error") %}
     <details class="inventory-error panel">
-      <summary>Ver detalhes técnicos</summary>
+      <summary>See technical details</summary>
       <pre>{{ stash["raw_error"] }}</pre>
     </details>
   {% endif %}
@@ -121,8 +121,8 @@
 
   <div class="sell-modal-content">
     <div class="sell-modal-header">
-      <h3>Anunciar item</h3>
-      <p>Defina quantidade e preço unitário para criar seu anúncio.</p>
+      <h3>Create listing</h3>
+      <p>Define the quantity and unit price to create your ad.</p>
     </div>
 
     <div class="sell-modal-body">
@@ -132,27 +132,27 @@
       </div>
 
       <div class="sell-modal-row">
-        <strong>Disponível:</strong>
+        <strong>Available:</strong>
         <span id="sell-item-available">0</span>
       </div>
 
       <div class="sell-form-group">
-        <label for="sell-quantity">Quantidade</label>
+        <label for="sell-quantity">Amount</label>
         <input id="sell-quantity" type="number" min="1" step="1" value="1">
       </div>
 
       <div class="sell-form-group">
-        <label for="sell-unit-price">Preço por unidade</label>
+        <label for="sell-unit-price">Price per unit</label>
         <input id="sell-unit-price" type="number" min="1" step="1" value="1">
       </div>
     </div>
 
     <div class="sell-modal-actions">
       <button type="button" class="btn sell-confirm-button" onclick="submitSellListing()">
-        Confirmar anúncio
+        Confirm sale
       </button>
       <button type="button" class="btn btn-secondary sell-cancel-button" onclick="closeSellModal()">
-        Cancelar
+        Cancel
       </button>
     </div>
   </div>

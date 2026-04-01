@@ -19,19 +19,19 @@
 
         <nav class="main-nav" aria-label="Navegação principal">
           <ul class="nav-list">
-            <li><a href="{{ url_for('index') }}">Início</a></li>
-            <li><a href="{{ url_for('inventory') }}">Inventário</a></li>
-            <li><a href="{{ url_for('catalog') }}">Catálogo</a></li>
-            <li><a href="{{ url_for('stash') }}">Stash</a></li>
-            <li><a href="{{ url_for('config') }}">Configurações</a></li>
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('inventory') }}">Inventory</a></li>
+            <li><a href="{{ url_for('catalog') }}">Market</a></li>
+            <li><a href="{{ url_for('stash') }}">Listings</a></li>
+            <li><a href="{{ url_for('config') }}">Configurations</a></li>
           </ul>
         </nav>
 
         <div class="topbar-actions">
-          <a href="{{ url_for('support') }}" class="support-link">☕ Apoiar projeto</a>
+          <a href="{{ url_for('support') }}" class="support-link">☕ Support the project</a>
 
           <div class="token-panel panel">
-            <span class="token-label">Saldo</span>
+            <span class="token-label">Balance</span>
             <strong class="token-value" id="balance-value">{{ global_balance }}</strong>
             <span class="token-label">tokens</span>
           </div>

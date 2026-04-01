@@ -8,23 +8,23 @@
 <section class="catalog-page">
 <div class="panel catalog-header">
   <div>
-    <h2 class="section-title">Mercado Arcano</h2>
+    <h2 class="section-title">Market</h2>
     <p class="catalog-subtitle">
-      Adquira runas diretamente do mercado. Os itens comprados serão enviados ao seu stash.
+      Purchase items directly from the market. Purchased items will be sent directly to your shared stash.
     </p>
   </div>
 
   <div class="catalog-summary">
-    <span class="badge">Runas disponíveis</span>
+    <span class="badge">Available Runes</span>
   </div>
 </div>
 
 <div class="panel catalog-toolbar">
     <div class="toolbar">
-        <input type="text" id="catalog-search" placeholder="Buscar runa..." onkeyup="filterCatalogCards()">
+        <input type="text" id="catalog-search" placeholder="Search runes..." onkeyup="filterCatalogCards()">
         <select id="catalog-filter" onchange="filterCatalogCards()">
-            <option value="all">Todos</option>
-            <option value="runa">Runas</option>
+            <option value="all">All</option>
+            <option value="runa">Runes</option>
         </select>
     </div>
 </div>
@@ -70,24 +70,24 @@
 
 									<button class="btn btn-primary buy-btn"
 													onclick="buyCatalogItem('{{ item_name }}', 'runa', {{ token_price }}, document.getElementById('qty-{{ item_name|lower }}').value, this)">
-											Comprar
+											Buy
 									</button>
 							</div>
 
 								<div class="tooltip-panel rune-tooltip">
 										<strong>{{ item_name }} Rune</strong>
-										<div><strong>Arma</strong></div>
+										<div><strong>Weapon</strong></div>
 										<div>{{ get_rune_tooltip(item_name, 'weapon') }}</div>
-										<div><strong>Armadura / Elmo</strong></div>
+										<div><strong>Armor / Helmet</strong></div>
 										<div>{{ get_rune_tooltip(item_name, 'armor') }}</div>
-										<div><strong>Escudo</strong></div>
+										<div><strong>Shield</strong></div>
 										<div>{{ get_rune_tooltip(item_name, 'shield') }}</div>
 								</div>
 						</div>
         {% endfor %}
     {% else %}
         <div class="panel empty-state">
-            Nenhum item disponível no catálogo.
+            There are no items available on the market.
         </div>
     {% endif %}
 </div>
@@ -104,7 +104,7 @@ async function buyCatalogItem(itemName, itemType, tokenPrice, qty = 1, buttonEl 
     try {
         if (activeButton && activeButton.tagName === "BUTTON") {
             activeButton.disabled = true;
-            activeButton.innerText = "Comprando...";
+            activeButton.innerText = "Buying...";
         }
 
         const result = await postJson("/api/buy_item", {
@@ -120,7 +120,7 @@ async function buyCatalogItem(itemName, itemType, tokenPrice, qty = 1, buttonEl 
             }
 
             if (typeof showMessage === "function") {
-                showMessage(`Compra realizada: ${qty}x ${itemName}`, "success");
+                showMessage(`Purchase made successfully: ${qty}x ${itemName}`, "success");
             }
 
             setTimeout(() => {
@@ -130,17 +130,17 @@ async function buyCatalogItem(itemName, itemType, tokenPrice, qty = 1, buttonEl 
         }
 
         if (typeof showMessage === "function") {
-            showMessage("Erro: " + (result.error || "falha na compra"), "error");
+            showMessage("Error: " + (result.error || "purchase failure"), "error");
         }
     } catch (error) {
         console.error(error);
         if (typeof showMessage === "function") {
-            showMessage("Erro ao comprar item: " + error.message, "error");
+            showMessage("Error purchasing item: " + error.message, "error");
         }
     } finally {
         if (activeButton && activeButton.tagName === "BUTTON") {
             activeButton.disabled = false;
-            activeButton.innerText = originalText || "Comprar";
+            activeButton.innerText = originalText || "Buy";
         }
     }
 }

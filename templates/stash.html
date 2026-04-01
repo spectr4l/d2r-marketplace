@@ -10,23 +10,23 @@
     <div>
       <h2 class="section-title">Auction House</h2>
       <p class="stash-subtitle">
-        Gerencie seus anúncios ativos e acompanhe as vendas concluídas no mercado.
+        Manage your active listings and track completed sales in the marketplace.
       </p>
     </div>
 
     <div class="stash-summary">
-      <span class="badge">Central de comércio</span>
+      <span class="badge">Sales center</span>
     </div>
   </div>
 
   {% if sold_now %}
     <div class="panel stash-sales-feedback">
-      <h3 class="stash-block-title">Vendas recentes</h3>
+      <h3 class="stash-block-title">Recent sales</h3>
 
       <div class="sales-feedback-list">
         {% for sold in sold_now %}
           <div class="sale-success">
-            <span class="sale-label">Vendido</span>
+            <span class="sale-label">Sold</span>
             <strong>{{ sold.name }}</strong>
             <span>x{{ sold.quantity }}</span>
             <span class="sale-total">+ {{ sold.total_tokens }} token(s)</span>
@@ -38,9 +38,9 @@
 
   <div class="panel stash-section">
     <div class="stash-section-header">
-      <h3 class="stash-block-title">Anúncios ativos</h3>
+      <h3 class="stash-block-title">Active listings</h3>
       <span class="badge">
-        {{ listed_items|length if listed_items else 0 }} ativo(s)
+        {{ listed_items|length if listed_items else 0 }} active(s)
       </span>
     </div>
 
@@ -51,19 +51,19 @@
             <div class="stash-listing-top">
               <div>
                 <div class="stash-listing-name">{{ item.name }}</div>
-                <div class="stash-listing-status">Anunciado no mercado</div>
+                <div class="stash-listing-status">Listed on the market</div>
               </div>
 
-              <span class="badge">Ativo</span>
+              <span class="badge">Active</span>
             </div>
 
             <div class="stash-listing-meta">
               <div class="meta-row">
-                <span>Quantidade</span>
+                <span>Amount</span>
                 <strong>{{ item.quantity }}</strong>
               </div>
               <div class="meta-row">
-                <span>Preço/unidade</span>
+                <span>Price/unit</span>
                 <strong>{{ item.unit_price }}</strong>
               </div>
               <div class="meta-row total-row">
@@ -77,7 +77,7 @@
                 type="button"
                 class="btn btn-secondary cancel-listing-button"
                 onclick="cancelListing('{{ item.id }}')">
-                Cancelar anúncio
+                Cancel sale
               </button>
             </div>
           </article>
@@ -85,8 +85,8 @@
       </div>
     {% else %}
       <div class="stash-empty-state">
-        <p>Nenhum anúncio ativo no momento.</p>
-        <span>Itens anunciados aparecerão aqui.</span>
+        <p>No active sales at the moment.</p>
+        <span>Listed items will appear here.</span>
       </div>
     {% endif %}
   </div>
