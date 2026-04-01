@@ -36,11 +36,11 @@ async function postJson(url, payload) {
     try {
         data = JSON.parse(text);
     } catch (error) {
-        throw new Error(`Resposta inválida do servidor: ${text}`);
+        throw new Error(`Invalid server response: ${text}`);
     }
 
     if (!response.ok) {
-        throw new Error(data.error || `Erro HTTP ${response.status}`);
+        throw new Error(data.error || `HTTP error ${response.status}`);
     }
 
     return data;
@@ -55,7 +55,7 @@ async function buyItem(itemName, itemType, tokenPrice) {
     try {
         if (activeButton && activeButton.tagName === "BUTTON") {
             activeButton.disabled = true;
-            activeButton.innerText = "Comprando...";
+            activeButton.innerText = "Buying...";
         }
 
         const result = await postJson("/api/buy_item", {
@@ -66,7 +66,7 @@ async function buyItem(itemName, itemType, tokenPrice) {
 
         if (result.success) {
             updateBalanceDisplay(result.new_balance);
-            showMessage(`Compra realizada: ${itemName}`, "success");
+            showMessage(`Purchase successful: ${itemName}`, "success");
 
             setTimeout(() => {
                 window.location.reload();
@@ -74,14 +74,14 @@ async function buyItem(itemName, itemType, tokenPrice) {
             return;
         }
 
-        showMessage("Erro: " + result.error, "error");
+        showMessage("Error: " + result.error, "error");
     } catch (error) {
-        showMessage("Erro ao comprar item: " + error.message, "error");
+        showMessage("Error purchasing item: " + error.message, "error");
         console.error(error);
     } finally {
         if (activeButton && activeButton.tagName === "BUTTON") {
             activeButton.disabled = false;
-            activeButton.innerText = originalText || "Comprar";
+            activeButton.innerText = originalText || "Buy";
         }
     }
 }
@@ -93,7 +93,7 @@ async function sellItem(itemId) {
     try {
         if (activeButton) {
             activeButton.disabled = true;
-            activeButton.innerText = "Vendendo...";
+            activeButton.innerText = "Selling...";
         }
 
         const result = await postJson("/api/sell_item", {
@@ -102,7 +102,7 @@ async function sellItem(itemId) {
 
         if (result.success) {
             updateBalanceDisplay(result.new_balance);
-            showMessage("Item vendido com sucesso!", "success");
+            showMessage("Item sold successfully!", "success");
 
             setTimeout(() => {
                 window.location.reload();
@@ -111,15 +111,15 @@ async function sellItem(itemId) {
             return;
         }
 
-        showMessage("Erro: " + result.error, "error");
+        showMessage("Error: " + result.error, "error");
 
     } catch (error) {
         console.error(error);
-        showMessage("Erro ao vender item", "error");
+        showMessage("Error selling item", "error");
     } finally {
         if (activeButton) {
             activeButton.disabled = false;
-            activeButton.innerText = originalText || "Vender";
+            activeButton.innerText = originalText || "Sell";
         }
     }
 }
@@ -127,7 +127,7 @@ async function sellItem(itemId) {
 async function updateSaveFolder() {
     const input = document.getElementById("save_folder");
     if (!input) {
-        showMessage("Campo da pasta não encontrado.", "error");
+        showMessage("Save folder input not found.", "error");
         return;
     }
 
@@ -137,13 +137,13 @@ async function updateSaveFolder() {
         });
 
         if (result.success) {
-            showMessage("Pasta atualizada com sucesso!", "success");
+            showMessage("Folder updated successfully!", "success");
             return;
         }
 
-        showMessage("Erro: " + result.error, "error");
+        showMessage("Error: " + result.error, "error");
     } catch (error) {
-        showMessage("Erro ao atualizar pasta: " + error.message, "error");
+        showMessage("Error updating folder: " + error.message, "error");
         console.error(error);
     }
 }
@@ -190,42 +190,6 @@ function filterMarketplaceCards() {
     });
 }
 
-function positionFloatingTooltip(tooltipEl, mouseX, mouseY) {
-    if (!tooltipEl) return;
-
-    const gap = 14;
-    const viewportPadding = 12;
-
-    tooltipEl.style.visibility = "hidden";
-    tooltipEl.style.display = "block";
-    tooltipEl.classList.add("is-visible");
-
-    const rect = tooltipEl.getBoundingClientRect();
-
-    let left = mouseX + gap;
-    let top = mouseY + gap;
-
-    if (left + rect.width > window.innerWidth - viewportPadding) {
-        left = mouseX - rect.width - gap;
-    }
-
-    if (left < viewportPadding) {
-        left = viewportPadding;
-    }
-
-    if (top + rect.height > window.innerHeight - viewportPadding) {
-        top = mouseY - rect.height - gap;
-    }
-
-    if (top < viewportPadding) {
-        top = viewportPadding;
-    }
-
-    tooltipEl.style.left = `${Math.round(left)}px`;
-    tooltipEl.style.top = `${Math.round(top)}px`;
-    tooltipEl.style.visibility = "visible";
-}
-
 function hideFloatingTooltip(tooltipEl) {
     if (!tooltipEl) return;
 
@@ -236,35 +200,9 @@ function hideFloatingTooltip(tooltipEl) {
     tooltipEl.style.top = "";
 }
 
-function bindFloatingTooltips(triggerSelector, tooltipSelector) {
-    const triggers = document.querySelectorAll(triggerSelector);
-
-    triggers.forEach((trigger) => {
-        const tooltip = trigger.querySelector(tooltipSelector);
-        if (!tooltip) return;
-
-        trigger.addEventListener("mouseenter", (event) => {
-            positionFloatingTooltip(tooltip, event.clientX, event.clientY);
-        });
-
-        trigger.addEventListener("mousemove", (event) => {
-            positionFloatingTooltip(tooltip, event.clientX, event.clientY);
-        });
-
-        trigger.addEventListener("mouseleave", () => {
-            hideFloatingTooltip(tooltip);
-        });
-    });
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    bindFloatingTooltips(".catalog-card", ".tooltip-panel");
-    bindFloatingTooltips(".stash-item", ".item-tooltip");
-});
-
 function openSellModal(item) {
     if (!item) {
-        showMessage("Item inválido.", "error");
+        showMessage("Invalid item.", "error");
         return;
     }
 
@@ -272,7 +210,7 @@ function openSellModal(item) {
 
     const modal = document.getElementById("sell-modal");
     if (!modal) {
-        showMessage("Modal de venda não encontrado.", "error");
+        showMessage("Sell modal not found.", "error");
         return;
     }
 
@@ -304,7 +242,7 @@ function closeSellModal() {
 
 async function submitSellListing() {
     if (!selectedSellItem) {
-        showMessage("Nenhum item selecionado.", "error");
+        showMessage("No item selected.", "error");
         return;
     }
 
@@ -313,17 +251,17 @@ async function submitSellListing() {
     const availableQty = Number(selectedSellItem.quantity || 1);
 
     if (!Number.isInteger(quantity) || quantity < 1) {
-        showMessage("Quantidade inválida.", "error");
+        showMessage("Invalid quantity.", "error");
         return;
     }
 
     if (quantity > availableQty) {
-        showMessage("Quantidade maior que a disponível.", "error");
+        showMessage("Quantity exceeds available amount.", "error");
         return;
     }
 
     if (!Number.isInteger(unitPrice) || unitPrice < 1) {
-        showMessage("Preço unitário inválido.", "error");
+        showMessage("Invalid unit price.", "error");
         return;
     }
 
@@ -336,16 +274,16 @@ async function submitSellListing() {
         });
 
         if (!res || res.error) {
-            showMessage(res?.error || "Erro ao anunciar item.", "error");
+            showMessage(res?.error || "Error listing item.", "error");
             return;
         }
 
-        showMessage("Item anunciado com sucesso!", "success");
+        showMessage("Item listed successfully!", "success");
         closeSellModal();
         setTimeout(() => window.location.reload(), 700);
 
     } catch (err) {
-        showMessage(err?.message || "Erro ao anunciar item.", "error");
+        showMessage(err?.message || "Error listing item.", "error");
         console.error("submitSellListing error:", err);
     }
 }
@@ -358,7 +296,7 @@ document.addEventListener("keydown", (event) => {
 
 async function cancelListing(listingId) {
     if (!listingId) {
-        showMessage("Listing inválido.", "error");
+        showMessage("Invalid listing.", "error");
         return;
     }
 
@@ -368,14 +306,14 @@ async function cancelListing(listingId) {
         });
 
         if (!res || res.error) {
-            showMessage(res?.error || "Erro ao cancelar anúncio.", "error");
+            showMessage(res?.error || "Error canceling listing.", "error");
             return;
         }
 
-        showMessage("Anúncio cancelado com sucesso.", "success");
+        showMessage("Listing canceled successfully.", "success");
         setTimeout(() => window.location.reload(), 700);
     } catch (err) {
-        showMessage(err?.message || "Erro ao cancelar anúncio.", "error");
+        showMessage(err?.message || "Error canceling listing.", "error");
         console.error("cancelListing error:", err);
     }
 }
