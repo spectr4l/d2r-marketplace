@@ -190,136 +190,77 @@ function filterMarketplaceCards() {
     });
 }
 
-function setupTooltips() {
-  const cards = document.querySelectorAll('.catalog-card, .stash-card');
+function positionFloatingTooltip(tooltipEl, mouseX, mouseY) {
+    if (!tooltipEl) return;
 
-  cards.forEach((card) => {
-    const tooltip = card.querySelector('.tooltip-panel');
-    if (!tooltip) return;
-
-    card.addEventListener('mouseenter', () => {
-      tooltip.classList.add('is-visible');
-    });
-
-    card.addEventListener('mouseleave', () => {
-      tooltip.classList.remove('is-visible');
-    });
-
-    card.addEventListener('mousemove', (event) => {
-      const offset = 16;
-      let left = event.clientX + offset;
-      let top = event.clientY + offset;
-
-      const rect = tooltip.getBoundingClientRect();
-
-      if (left + rect.width > window.innerWidth - 10) {
-        left = event.clientX - rect.width - offset;
-      }
-
-      if (top + rect.height > window.innerHeight - 10) {
-        top = window.innerHeight - rect.height - 10;
-      }
-
-      tooltip.style.left = `${left}px`;
-      tooltip.style.top = `${top}px`;
-    });
-  });
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  setupTooltips();
-});
-
-function placeTooltip(card) {
-    const tooltip = card.querySelector(".item-tooltip");
-    if (!tooltip) return;
-
-    const anchor = card.querySelector(".item-image-container") || card;
-
-    const gap = 10;
+    const gap = 14;
     const viewportPadding = 12;
 
-    // prepara para medir sem mostrar visualmente no lugar errado
-    tooltip.classList.add("is-visible");
-    tooltip.style.visibility = "hidden";
-    tooltip.style.left = "0px";
-    tooltip.style.top = "0px";
+    tooltipEl.style.visibility = "hidden";
+    tooltipEl.style.display = "block";
+    tooltipEl.classList.add("is-visible");
 
-    const anchorRect = anchor.getBoundingClientRect();
-    const tooltipRect = tooltip.getBoundingClientRect();
+    const rect = tooltipEl.getBoundingClientRect();
 
-    let left = anchorRect.right + gap;
-    let top = anchorRect.top + (anchorRect.height - tooltipRect.height) / 2;
+    let left = mouseX + gap;
+    let top = mouseY + gap;
 
-    if (left + tooltipRect.width > window.innerWidth - viewportPadding) {
-        left = anchorRect.left - tooltipRect.width - gap;
+    if (left + rect.width > window.innerWidth - viewportPadding) {
+        left = mouseX - rect.width - gap;
     }
 
     if (left < viewportPadding) {
         left = viewportPadding;
     }
 
-    if (left + tooltipRect.width > window.innerWidth - viewportPadding) {
-        left = window.innerWidth - tooltipRect.width - viewportPadding;
+    if (top + rect.height > window.innerHeight - viewportPadding) {
+        top = mouseY - rect.height - gap;
     }
 
     if (top < viewportPadding) {
         top = viewportPadding;
     }
 
-    if (top + tooltipRect.height > window.innerHeight - viewportPadding) {
-        top = window.innerHeight - tooltipRect.height - viewportPadding;
-    }
-
-    tooltip.style.left = `${Math.round(left)}px`;
-    tooltip.style.top = `${Math.round(top)}px`;
-    tooltip.style.visibility = "visible";
+    tooltipEl.style.left = `${Math.round(left)}px`;
+    tooltipEl.style.top = `${Math.round(top)}px`;
+    tooltipEl.style.visibility = "visible";
 }
 
-function hideTooltip(card) {
-    const tooltip = card.querySelector(".item-tooltip");
-    if (!tooltip) return;
+function hideFloatingTooltip(tooltipEl) {
+    if (!tooltipEl) return;
 
-    tooltip.classList.remove("is-visible");
-    tooltip.style.left = "";
-    tooltip.style.top = "";
-    tooltip.style.visibility = "";
+    tooltipEl.classList.remove("is-visible");
+    tooltipEl.style.display = "";
+    tooltipEl.style.visibility = "";
+    tooltipEl.style.left = "";
+    tooltipEl.style.top = "";
 }
 
-function initializeItemTooltips() {
-    const cards = document.querySelectorAll(".marketplace-card, .catalog-card");
+function bindFloatingTooltips(triggerSelector, tooltipSelector) {
+    const triggers = document.querySelectorAll(triggerSelector);
 
-    cards.forEach(card => {
-        const tooltip = card.querySelector(".item-tooltip");
+    triggers.forEach((trigger) => {
+        const tooltip = trigger.querySelector(tooltipSelector);
         if (!tooltip) return;
 
-        card.addEventListener("mouseenter", () => {
-            requestAnimationFrame(() => placeTooltip(card));
+        trigger.addEventListener("mouseenter", (event) => {
+            positionFloatingTooltip(tooltip, event.clientX, event.clientY);
         });
 
-        card.addEventListener("mouseleave", () => {
-            hideTooltip(card);
+        trigger.addEventListener("mousemove", (event) => {
+            positionFloatingTooltip(tooltip, event.clientX, event.clientY);
         });
-    });
 
-    window.addEventListener("scroll", () => {
-        const hovered = document.querySelector(".marketplace-card:hover, .catalog-card:hover");
-        if (hovered) {
-            placeTooltip(hovered);
-        }
-    }, true);
-
-    window.addEventListener("resize", () => {
-        const hovered = document.querySelector(".marketplace-card:hover, .catalog-card:hover");
-        if (hovered) {
-            placeTooltip(hovered);
-        }
+        trigger.addEventListener("mouseleave", () => {
+            hideFloatingTooltip(tooltip);
+        });
     });
 }
 
-document.addEventListener("DOMContentLoaded", initializeItemTooltips);
-
-let selectedSellItem = null;
+document.addEventListener("DOMContentLoaded", () => {
+    bindFloatingTooltips(".catalog-card", ".tooltip-panel");
+    bindFloatingTooltips(".stash-item", ".item-tooltip");
+});
 
 function openSellModal(item) {
     if (!item) {
@@ -438,3 +379,65 @@ async function cancelListing(listingId) {
         console.error("cancelListing error:", err);
     }
 }
+
+function positionFloatingTooltip(tooltipEl, mouseX, mouseY) {
+  if (!tooltipEl) return;
+
+  const gap = 18;
+  const viewportPadding = 12;
+
+  tooltipEl.style.left = "0px";
+  tooltipEl.style.top = "0px";
+  tooltipEl.classList.add("is-visible");
+
+  const rect = tooltipEl.getBoundingClientRect();
+
+  let left = mouseX + gap;
+  let top = mouseY + gap;
+
+  if (left + rect.width > window.innerWidth - viewportPadding) {
+    left = mouseX - rect.width - gap;
+  }
+
+  if (left < viewportPadding) {
+    left = viewportPadding;
+  }
+
+  if (top + rect.height > window.innerHeight - viewportPadding) {
+    top = window.innerHeight - rect.height - viewportPadding;
+  }
+
+  if (top < viewportPadding) {
+    top = viewportPadding;
+  }
+
+  tooltipEl.style.left = `${left}px`;
+  tooltipEl.style.top = `${top}px`;
+}
+
+function bindFloatingTooltips(triggerSelector, tooltipSelector) {
+  const triggers = document.querySelectorAll(triggerSelector);
+
+  triggers.forEach(trigger => {
+    const tooltip = trigger.querySelector(tooltipSelector);
+    if (!tooltip) return;
+
+    trigger.addEventListener("mouseenter", (event) => {
+      tooltip.classList.add("is-visible");
+      positionFloatingTooltip(tooltip, event.clientX, event.clientY);
+    });
+
+    trigger.addEventListener("mousemove", (event) => {
+      positionFloatingTooltip(tooltip, event.clientX, event.clientY);
+    });
+
+    trigger.addEventListener("mouseleave", () => {
+      tooltip.classList.remove("is-visible");
+    });
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  bindFloatingTooltips(".catalog-card", ".tooltip-panel");
+  bindFloatingTooltips(".stash-item", ".item-tooltip");
+});

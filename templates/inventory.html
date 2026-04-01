@@ -1,86 +1,120 @@
 ﻿{% extends "base.html" %}
 
-{% block content %}
+{% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/inventory.css') }}">
+{% endblock %}
 
-<div class="inventory-page">
-  <h2>Shared Stash do D2R</h2>
+{% block content %}
+<section class="inventory-page">
+  <div class="panel inventory-header">
+    <div>
+      <h2 class="section-title">Shared Stash do D2R</h2>
+      <p class="inventory-subtitle">
+        Visualize os itens lidos do seu stash e anuncie no mercado os que deseja vender.
+      </p>
+    </div>
 
-  <div id="message-area"></div>
-
-  <div class="inventory-meta">
-    <div><strong>Stash:</strong> {{ stash["stash_name"] }}</div>
-    <div><strong>Arquivo:</strong> {{ stash["stash_file"] or "Não encontrado" }}</div>
-    <div><strong>Itens lidos:</strong> {{ stash["item_count"] }}</div>
-    <div><strong>Status:</strong>
-      {% if stash.get("raw_error") %}
-        <div class="inventory-status inventory-status-error">
-          {{ stash["read_status"] }}
-        </div>
-      {% else %}
-        <div class="inventory-status inventory-status-success">
-          {{ stash["read_status"] }}
-        </div>
-      {% endif %}
+    <div class="inventory-summary">
+      <span class="badge">{{ stash["item_count"] }} item(ns)</span>
     </div>
   </div>
 
+  <div class="panel inventory-meta-panel">
+    <div class="inventory-meta-grid">
+      <div class="meta-box">
+        <span class="meta-label">Stash</span>
+        <strong>{{ stash["stash_name"] }}</strong>
+      </div>
+
+      <div class="meta-box">
+        <span class="meta-label">Arquivo</span>
+        <strong>{{ stash["stash_file"] or "Não encontrado" }}</strong>
+      </div>
+
+      <div class="meta-box">
+        <span class="meta-label">Itens lidos</span>
+        <strong>{{ stash["item_count"] }}</strong>
+      </div>
+
+      <div class="meta-box">
+        <span class="meta-label">Status</span>
+        {% if stash.get("raw_error") %}
+          <div class="inventory-status inventory-status-error">
+            {{ stash["read_status"] }}
+          </div>
+        {% else %}
+          <div class="inventory-status inventory-status-success">
+            {{ stash["read_status"] }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
 
   {% if stash["items"] %}
-    <div class="inventory-grid">
-      {% for item in stash["items"] %}
-        
-        <div class="stash-item">
-          <div class="stash-item-card quality-{{ item['quality'] }}">
-            <div class="stash-item-header">
-              <img
-                class="stash-item-icon"
-                src="{{ item['icon'] }}"
-                alt="{{ item['itemName'] }}"
-                loading="lazy"
-                onerror="this.src='{{ url_for('static', filename='img/items/default_item.webp') }}'"
-              >
+    <div class="panel inventory-section">
+      <div class="inventory-section-header">
+        <h3 class="inventory-block-title">Itens disponíveis</h3>
+        <span class="badge">Prontos para anúncio</span>
+      </div>
 
-              <div class="stash-item-text">
-                <div class="stash-item-name">{{ item["itemName"] }}</div>
+      <div class="inventory-grid">
+        {% for item in stash["items"] %}
+          <div class="stash-item">
+            <div class="stash-item-card quality-{{ item['quality'] }}">
+              <div class="stash-item-header">
+                <img
+                  class="stash-item-icon"
+                  src="{{ item['icon'] }}"
+                  alt="{{ item['itemName'] }}"
+                  loading="lazy"
+                  onerror="this.src='{{ url_for('static', filename='img/items/default_item.webp') }}'"
+                >
 
-                {% if item["quantity"] > 1 %}
-                  <div class="stash-item-qty">{{ item["quantity"] }}</div>
-                {% endif %}
+                <div class="stash-item-text">
+                  <div class="stash-item-name">{{ item["itemName"] }}</div>
+
+                  {% if item["quantity"] > 1 %}
+                    <div class="stash-item-qty">x{{ item["quantity"] }}</div>
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="stash-item-actions">
+                <button
+                  type="button"
+                  class="btn sell-item-button"
+                  onclick='openSellModal({{ item|tojson|safe }})'>
+                  Anunciar
+                </button>
               </div>
             </div>
 
-            <div class="stash-item-actions">
-              <button
-                type="button"
-                class="sell-item-button"
-                onclick='openSellModal({{ item|tojson|safe }})'>
-                Vender
-              </button>
+            <div class="item-tooltip">
+              {% for line in item["tooltip_lines"] %}
+                <div class="tooltip-line {% if loop.first %}tooltip-title{% endif %}">
+                  {{ line }}
+                </div>
+              {% endfor %}
             </div>
           </div>
-
-          <div class="item-tooltip">
-            {% for line in item["tooltip_lines"] %}
-              <div class="tooltip-line {% if loop.first %}tooltip-title{% endif %}">
-                {{ line }}
-              </div>
-            {% endfor %}
-          </div>
-        </div>
-      {% endfor %}
+        {% endfor %}
+      </div>
     </div>
   {% else %}
-    <p>Nenhum item encontrado no shared stash.</p>
+    <div class="panel inventory-empty-state">
+      <p>Nenhum item encontrado no shared stash.</p>
+      <span>Quando a leitura funcionar corretamente, os itens aparecerão aqui.</span>
+    </div>
   {% endif %}
 
   {% if stash.get("raw_error") %}
-    <details class="inventory-error">
+    <details class="inventory-error panel">
       <summary>Ver detalhes técnicos</summary>
       <pre>{{ stash["raw_error"] }}</pre>
     </details>
   {% endif %}
-</div>
+</section>
 
 <div id="sell-modal" class="sell-modal">
   <div class="sell-modal-backdrop" onclick="closeSellModal()"></div>
@@ -88,6 +122,7 @@
   <div class="sell-modal-content">
     <div class="sell-modal-header">
       <h3>Anunciar item</h3>
+      <p>Defina quantidade e preço unitário para criar seu anúncio.</p>
     </div>
 
     <div class="sell-modal-body">
@@ -113,10 +148,10 @@
     </div>
 
     <div class="sell-modal-actions">
-      <button type="button" class="sell-confirm-button" onclick="submitSellListing()">
-        Anunciar
+      <button type="button" class="btn sell-confirm-button" onclick="submitSellListing()">
+        Confirmar anúncio
       </button>
-      <button type="button" class="sell-cancel-button" onclick="closeSellModal()">
+      <button type="button" class="btn btn-secondary sell-cancel-button" onclick="closeSellModal()">
         Cancelar
       </button>
     </div>

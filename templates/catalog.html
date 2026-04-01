@@ -6,15 +6,20 @@
 
 {% block content %}
 <section class="catalog-page">
-<h2 class="page-title">Catálogo</h2>
-
-<div class="panel">
-    <p>
-        Compre itens virtuais usando seus tokens. Os itens comprados vão para o seu Stash interno.
+<div class="panel catalog-header">
+  <div>
+    <h2 class="section-title">Mercado Arcano</h2>
+    <p class="catalog-subtitle">
+      Adquira runas diretamente do mercado. Os itens comprados serão enviados ao seu stash.
     </p>
+  </div>
+
+  <div class="catalog-summary">
+    <span class="badge">Runas disponíveis</span>
+  </div>
 </div>
 
-<div class="panel">
+<div class="panel catalog-toolbar">
     <div class="toolbar">
         <input type="text" id="catalog-search" placeholder="Buscar runa..." onkeyup="filterCatalogCards()">
         <select id="catalog-filter" onchange="filterCatalogCards()">
@@ -47,8 +52,11 @@
 												 class="item-image">
 								</div>
 
-								<div class="catalog-card-type">Runa Tier {{ rune_tier }}</div>
-								<div class="catalog-card-title">{{ item_name }}</div>
+								<div class="catalog-card-header">
+                                <span class="badge">Tier {{ rune_tier }}</span>
+                                </div>
+
+                                <div class="catalog-card-title">{{ item_name }}</div>
 								<div class="catalog-card-price">{{ token_price }} tokens</div>
 
 								<div class="catalog-buy-controls">

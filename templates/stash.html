@@ -1,49 +1,94 @@
 ﻿{% extends "base.html" %}
 
-{% block content %}
+{% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/stash.css') }}">
+{% endblock %}
 
-<div class="stash-page">
-  <h2>Auction House</h2>
+{% block content %}
+<section class="stash-page">
+  <div class="panel stash-header">
+    <div>
+      <h2 class="section-title">Auction House</h2>
+      <p class="stash-subtitle">
+        Gerencie seus anúncios ativos e acompanhe as vendas concluídas no mercado.
+      </p>
+    </div>
 
-  <div id="message-area"></div>
+    <div class="stash-summary">
+      <span class="badge">Central de comércio</span>
+    </div>
+  </div>
 
   {% if sold_now %}
-    <div class="stash-sales-feedback">
-      {% for sold in sold_now %}
-        <div class="sale-success">
-          Vendido: {{ sold.name }} x{{ sold.quantity }} por {{ sold.total_tokens }} token(s)
-        </div>
-      {% endfor %}
+    <div class="panel stash-sales-feedback">
+      <h3 class="stash-block-title">Vendas recentes</h3>
+
+      <div class="sales-feedback-list">
+        {% for sold in sold_now %}
+          <div class="sale-success">
+            <span class="sale-label">Vendido</span>
+            <strong>{{ sold.name }}</strong>
+            <span>x{{ sold.quantity }}</span>
+            <span class="sale-total">+ {{ sold.total_tokens }} token(s)</span>
+          </div>
+        {% endfor %}
+      </div>
     </div>
   {% endif %}
 
-  {% if listed_items %}
-    <div class="stash-listings-grid">
-      {% for item in listed_items %}
-        <div class="stash-listing-card">
-          <div class="stash-listing-name">{{ item.name }}</div>
-
-          <div class="stash-listing-meta">
-            <div><strong>Quantidade:</strong> {{ item.quantity }}</div>
-            <div><strong>Preço/unidade:</strong> {{ item.unit_price }}</div>
-            <div><strong>Total:</strong> {{ item.quantity * item.unit_price }}</div>
-            <div><strong>Status:</strong> Anunciado</div>
-          </div>
-
-          <div class="stash-listing-actions">
-            <button
-              type="button"
-              class="cancel-listing-button"
-              onclick="cancelListing('{{ item.id }}')">
-              Cancelar
-            </button>
-          </div>
-        </div>
-      {% endfor %}
+  <div class="panel stash-section">
+    <div class="stash-section-header">
+      <h3 class="stash-block-title">Anúncios ativos</h3>
+      <span class="badge">
+        {{ listed_items|length if listed_items else 0 }} ativo(s)
+      </span>
     </div>
-  {% else %}
-    <p>Nenhum anúncio ativo no momento.</p>
-  {% endif %}
-</div>
+
+    {% if listed_items %}
+      <div class="stash-listings-grid">
+        {% for item in listed_items %}
+          <article class="stash-listing-card">
+            <div class="stash-listing-top">
+              <div>
+                <div class="stash-listing-name">{{ item.name }}</div>
+                <div class="stash-listing-status">Anunciado no mercado</div>
+              </div>
+
+              <span class="badge">Ativo</span>
+            </div>
+
+            <div class="stash-listing-meta">
+              <div class="meta-row">
+                <span>Quantidade</span>
+                <strong>{{ item.quantity }}</strong>
+              </div>
+              <div class="meta-row">
+                <span>Preço/unidade</span>
+                <strong>{{ item.unit_price }}</strong>
+              </div>
+              <div class="meta-row total-row">
+                <span>Total</span>
+                <strong>{{ item.quantity * item.unit_price }}</strong>
+              </div>
+            </div>
+
+            <div class="stash-listing-actions">
+              <button
+                type="button"
+                class="btn btn-secondary cancel-listing-button"
+                onclick="cancelListing('{{ item.id }}')">
+                Cancelar anúncio
+              </button>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="stash-empty-state">
+        <p>Nenhum anúncio ativo no momento.</p>
+        <span>Itens anunciados aparecerão aqui.</span>
+      </div>
+    {% endif %}
+  </div>
+</section>
 {% endblock %}

@@ -5,32 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>D2R Market</title>
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/core.css') }}">
   {% block extra_css %}{% endblock %}
 </head>
 <body>
-  <nav>
-    <div class="nav-container">
-      <h1>D2R Market</h1>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <h1 class="brand-title">D2R Market</h1>
+          <p class="brand-subtitle">Single Player Auction House</p>
+        </div>
 
-      <ul>
-				<li><a href="{{ url_for('index') }}">Início</a></li>
-				<li><a href="{{ url_for('inventory') }}">Inventário</a></li>
-				<li><a href="{{ url_for('catalog') }}">Catálogo</a></li>
-				<li><a href="{{ url_for('stash') }}">Stash</a></li>
-				<li><a href="{{ url_for('config') }}">Configurações</a></li>
-			</ul>
+        <nav class="main-nav" aria-label="Navegação principal">
+          <ul class="nav-list">
+            <li><a href="{{ url_for('index') }}">Início</a></li>
+            <li><a href="{{ url_for('inventory') }}">Inventário</a></li>
+            <li><a href="{{ url_for('catalog') }}">Catálogo</a></li>
+            <li><a href="{{ url_for('stash') }}">Stash</a></li>
+            <li><a href="{{ url_for('config') }}">Configurações</a></li>
+          </ul>
+        </nav>
 
-      <div class="token-balance">
-        <span id="balance-value">{{ global_balance }}</span> tokens
+        <div class="token-panel panel">
+          <span class="token-label">Saldo</span>
+          <strong class="token-value" id="balance-value">{{ global_balance }}</strong>
+          <span class="token-label">tokens</span>
+        </div>
       </div>
-    </div>
-  </nav>
+    </header>
 
-  <main>
-    <div id="message-area"></div>
-    {% block content %}{% endblock %}
-  </main>
+    <main class="page-content">
+      <div id="message-area" class="message-area"></div>
+      {% block content %}{% endblock %}
+    </main>
+  </div>
 
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
   {% block extra_js %}{% endblock %}

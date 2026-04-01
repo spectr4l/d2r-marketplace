@@ -13,7 +13,6 @@ from database.db import (
     get_listed_item_by_id,
     mark_listing_cancelled,
     process_due_listings,
-    get_connection,
 )
 from modules.d2_writer import write_item_to_shared_stash
 

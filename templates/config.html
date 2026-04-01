@@ -1,33 +1,65 @@
 ﻿{% extends "base.html" %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/config.css') }}">
+{% endblock %}
+
 {% block content %}
-<div style="padding: 20px;">
-    <h2 style="color: #e94560; margin-bottom: 20px;">Configurações</h2>
-
-    <div style="background: #16213e; padding: 20px; border-radius: 8px; max-width: 600px;">
-        <div style="margin-bottom: 20px;">
-            <label style="display: block; margin-bottom: 10px; color: #4ecdc4; font-weight: bold;">
-                Pasta de Saves do D2R:
-            </label>
-
-            <input
-                type="text"
-                id="save_folder"
-                value="{{ save_folder }}"
-                style="width: 100%; padding: 10px; background: #1a1a2e; border: 1px solid #0f3460; color: white; border-radius: 5px; margin-bottom: 10px;"
-            >
-
-            <button
-                onclick="updateSaveFolder()"
-                style="padding: 10px 20px;">
-                Atualizar Pasta
-            </button>
-        </div>
-
-        <div style="border-top: 1px solid #0f3460; padding-top: 20px;">
-            <p style="color: #ccc;">Status do Banco de Dados: <span style="color: #4ecdc4;">Ativo</span></p>
-            <p style="color: #ccc;">Versão: 1.0.0</p>
-        </div>
+<section class="config-page">
+  <div class="panel config-header">
+    <div>
+      <h2 class="section-title">Configurações</h2>
+      <p class="config-subtitle">
+        Ajuste o caminho dos saves do Diablo II: Resurrected e verifique o estado do sistema.
+      </p>
     </div>
-</div>
+
+    <div class="config-summary">
+      <span class="badge">Sistema local</span>
+    </div>
+  </div>
+
+  <div class="panel config-section">
+    <div class="config-section-header">
+      <h3 class="config-block-title">Integração com saves</h3>
+    </div>
+
+    <div class="config-form-group">
+      <label for="save_folder">Pasta de Saves do D2R</label>
+      <input
+        type="text"
+        id="save_folder"
+        value="{{ save_folder }}"
+        placeholder="Ex.: C:\Users\SeuNome\Saved Games\Diablo II Resurrected"
+      >
+      <p class="config-help-text">
+        Informe a pasta onde ficam os arquivos de save utilizados pelo sistema.
+      </p>
+    </div>
+
+    <div class="config-actions">
+      <button class="btn" onclick="updateSaveFolder()">
+        Atualizar pasta
+      </button>
+    </div>
+  </div>
+
+  <div class="panel config-section">
+    <div class="config-section-header">
+      <h3 class="config-block-title">Status do sistema</h3>
+    </div>
+
+    <div class="config-status-grid">
+      <div class="meta-box">
+        <span class="meta-label">Banco de dados</span>
+        <strong class="status-ok">Ativo</strong>
+      </div>
+
+      <div class="meta-box">
+        <span class="meta-label">Versão</span>
+        <strong>1.0.0</strong>
+      </div>
+    </div>
+  </div>
+</section>
 {% endblock %}
