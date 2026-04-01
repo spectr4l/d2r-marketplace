@@ -93,7 +93,8 @@ a:hover {
 .section-title {
   margin: 0 0 14px;
   font-family: var(--font-title);
-  font-size: 1.25rem;
+  font-size: 1.35rem;
+  letter-spacing: 0.5px;
   color: var(--accent-gold);
 }
 
@@ -202,6 +203,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .token-value {
+  text-shadow: 0 0 6px rgba(201, 163, 74, 0.25);
   display: block;
   font-size: 1.4rem;
   color: var(--accent-gold);
@@ -211,6 +213,42 @@ input:focus, select:focus, textarea:focus {
 
 .page-content {
   padding-bottom: 32px;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.support-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: linear-gradient(to bottom, #3a2f25, #241c15);
+  color: #e7d9b8 !important;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 4px 12px rgba(0, 0, 0, 0.28);
+  transition: 0.18s ease;
+}
+
+.support-link:hover {
+  color: #f3dfb2 !important;
+  border-color: #c9a34a;
+  background: linear-gradient(to bottom, #4a3a2b, #2c2218);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 6px 16px rgba(0, 0, 0, 0.34),
+    0 0 6px rgba(201, 163, 74, 0.25); /* glow sutil */
+}
+
+.support-link:active {
+  transform: translateY(1px);
 }
 
 .message-area {

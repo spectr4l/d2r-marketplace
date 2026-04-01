@@ -339,6 +339,9 @@ def catalog():
 def config():
     return render_template("config.html", save_folder=SAVE_FOLDER)
 
+@app.route("/support")
+def support():
+    return render_template("support.html")
 
 @app.route("/api/export_item", methods=["POST"])
 def export_item():

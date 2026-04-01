@@ -27,12 +27,15 @@
           </ul>
         </nav>
 
-        <div class="token-panel panel">
-          <span class="token-label">Saldo</span>
-          <strong class="token-value" id="balance-value">{{ global_balance }}</strong>
-          <span class="token-label">tokens</span>
+        <div class="topbar-actions">
+          <a href="{{ url_for('support') }}" class="support-link">☕ Apoiar projeto</a>
+
+          <div class="token-panel panel">
+            <span class="token-label">Saldo</span>
+            <strong class="token-value" id="balance-value">{{ global_balance }}</strong>
+            <span class="token-label">tokens</span>
+          </div>
         </div>
-      </div>
     </header>
 
     <main class="page-content">
