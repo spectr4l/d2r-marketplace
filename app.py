@@ -39,114 +39,114 @@ DEFAULT_SAVE_FOLDER = os.path.expanduser("~/Documents/Diablo II Resurrected/")
 
 RUNE_TOOLTIPS = {
     "El": {
-        "weapon": "+50 para Attack Rating, +1 de raio de luz",
-        "armor": "+15 de defesa, +1 de raio de luz",
-        "shield": "+1 de raio de luz"
+        "weapon": "+50 to Attack Rating, +1 to Light Radius",
+        "armor": "+15 Defense, +1 to Light Radius",
+        "shield": "+1 to Light Radius"
     },
     "Eld": {
-        "weapon": "+75% dano contra mortos-vivos, +50 Attack Rating contra mortos-vivos",
-        "armor": "15% stamina drenada mais lentamente",
-        "shield": "7% maior chance de bloqueio"
+        "weapon": "+75% Damage to Undead, +50 Attack Rating against Undead",
+        "armor": "15% Slower Stamina Drain",
+        "shield": "7% Increased Chance of Blocking"
     },
     "Tir": {
-        "weapon": "+2 mana após cada abate",
-        "armor": "+2 mana após cada abate",
-        "shield": "+2 mana após cada abate"
+        "weapon": "+2 Mana After Each Kill",
+        "armor": "+2 Mana After Each Kill",
+        "shield": "+2 Mana After Each Kill"
     },
     "Nef": {
         "weapon": "Knockback",
-        "armor": "+30 defesa contra projéteis",
-        "shield": "+30 defesa contra projéteis"
+        "armor": "+30 Defense vs. Missile",
+        "shield": "+30 Defense vs. Missile"
     },
     "Eth": {
-        "weapon": "-25% defesa do alvo",
-        "armor": "Regenera mana em 15%",
-        "shield": "Regenera mana em 15%"
+        "weapon": "-25% Target Defense",
+        "armor": "Regenerate Mana 15%",
+        "shield": "Regenerate Mana 15%"
     },
     "Ith": {
-        "weapon": "+9 de dano máximo",
-        "armor": "15% do dano recebido vai para mana",
-        "shield": "15% do dano recebido vai para mana"
+        "weapon": "+9 to Maximum Damage",
+        "armor": "15% Damage Taken Goes To Mana",
+        "shield": "15% Damage Taken Goes To Mana"
     },
     "Tal": {
-        "weapon": "+75 dano de veneno por 5 segundos",
-        "armor": "+30% resistência a veneno",
-        "shield": "+35% resistência a veneno"
+        "weapon": "+75 Poison Damage Over 5 Seconds",
+        "armor": "+30% Poison Resist",
+        "shield": "+35% Poison Resist"
     },
     "Ral": {
-        "weapon": "Adiciona 5-30 de dano de fogo",
-        "armor": "+30% resistência a fogo",
-        "shield": "+35% resistência a fogo"
+        "weapon": "Adds 5-30 Fire Damage",
+        "armor": "+30% Fire Resist",
+        "shield": "+35% Fire Resist"
     },
     "Ort": {
-        "weapon": "Adiciona 1-50 de dano elétrico",
-        "armor": "+30% resistência a raio",
-        "shield": "+35% resistência a raio"
+        "weapon": "Adds 1-50 Lightning Damage",
+        "armor": "+30% Lightning Resist",
+        "shield": "+35% Lightning Resist"
     },
     "Thul": {
-        "weapon": "Adiciona 3-14 de dano de gelo",
-        "armor": "+30% resistência a gelo",
-        "shield": "+35% resistência a gelo"
+        "weapon": "Adds 3-14 Cold Damage",
+        "armor": "+30% Cold Resist",
+        "shield": "+35% Cold Resist"
     },
     "Amn": {
-        "weapon": "7% life stolen per hit",
-        "armor": "Atacante sofre 14 de dano",
-        "shield": "Atacante sofre 14 de dano"
+        "weapon": "7% Life Stolen Per Hit",
+        "armor": "Attacker Takes Damage of 14",
+        "shield": "Attacker Takes Damage of 14"
     },
     "Sol": {
-        "weapon": "+9 de dano mínimo",
-        "armor": "Reduz dano em 7",
-        "shield": "Reduz dano em 7"
+        "weapon": "+9 to Minimum Damage",
+        "armor": "Damage Reduced by 7",
+        "shield": "Damage Reduced by 7"
     },
     "Shael": {
-        "weapon": "20% increased attack speed",
-        "armor": "20% faster hit recovery",
-        "shield": "20% faster block rate"
+        "weapon": "20% Increased Attack Speed",
+        "armor": "20% Faster Hit Recovery",
+        "shield": "20% Faster Block Rate"
     },
     "Dol": {
-        "weapon": "Hit causes monster to flee 25%",
-        "armor": "Replenish life +7",
-        "shield": "Replenish life +7"
+        "weapon": "Hit Causes Monster to Flee 25%",
+        "armor": "Replenish Life +7",
+        "shield": "Replenish Life +7"
     },
     "Hel": {
-        "weapon": "Requisitos -20%",
-        "armor": "Requisitos -15%",
-        "shield": "Requisitos -15%"
+        "weapon": "Requirements -20%",
+        "armor": "Requirements -15%",
+        "shield": "Requirements -15%"
     },
     "Io": {
-        "weapon": "+10 vitalidade",
-        "armor": "+10 vitalidade",
-        "shield": "+10 vitalidade"
+        "weapon": "+10 Vitality",
+        "armor": "+10 Vitality",
+        "shield": "+10 Vitality"
     },
     "Lum": {
-        "weapon": "+10 energia",
-        "armor": "+10 energia",
-        "shield": "+10 energia"
+        "weapon": "+10 Energy",
+        "armor": "+10 Energy",
+        "shield": "+10 Energy"
     },
     "Ko": {
-        "weapon": "+10 destreza",
-        "armor": "+10 destreza",
-        "shield": "+10 destreza"
+        "weapon": "+10 Dexterity",
+        "armor": "+10 Dexterity",
+        "shield": "+10 Dexterity"
     },
     "Fal": {
-        "weapon": "+10 força",
-        "armor": "+10 força",
-        "shield": "+10 força"
+        "weapon": "+10 Strength",
+        "armor": "+10 Strength",
+        "shield": "+10 Strength"
     },
     "Lem": {
-        "weapon": "75% gold extra de monstros",
-        "armor": "50% gold extra de monstros",
-        "shield": "50% gold extra de monstros"
+        "weapon": "75% Extra Gold from Monsters",
+        "armor": "50% Extra Gold from Monsters",
+        "shield": "50% Extra Gold from Monsters"
     },
     "Pul": {
-        "weapon": "+75% dano contra demônios, +100 AR contra demônios",
-        "armor": "+30% defesa aprimorada",
-        "shield": "+30% defesa aprimorada"
+        "weapon": "+75% Damage to Demons, +100 Attack Rating against Demons",
+        "armor": "+30% Enhanced Defense",
+        "shield": "+30% Enhanced Defense"
     },
     "Um": {
-        "weapon": "25% chance de feridas abertas",
-        "armor": "+15% todas as resistências",
-        "shield": "+22% todas as resistências"
+        "weapon": "25% Chance of Open Wounds",
+        "armor": "+15% All Resistances",
+        "shield": "+22% All Resistances"
     },
     "Mal": {
         "weapon": "Prevent Monster Heal",
@@ -154,47 +154,47 @@ RUNE_TOOLTIPS = {
         "shield": "Magic Damage Reduced by 7"
     },
     "Ist": {
-        "weapon": "30% melhor chance de itens mágicos",
-        "armor": "25% melhor chance de itens mágicos",
-        "shield": "25% melhor chance de itens mágicos"
+        "weapon": "30% Better Chance of Getting Magic Items",
+        "armor": "25% Better Chance of Getting Magic Items",
+        "shield": "25% Better Chance of Getting Magic Items"
     },
     "Gul": {
-        "weapon": "20% bônus para attack rating",
-        "armor": "+5% maximum poison resist",
-        "shield": "+5% maximum poison resist"
+        "weapon": "+20% Bonus to Attack Rating",
+        "armor": "+5% Maximum Poison Resist",
+        "shield": "+5% Maximum Poison Resist"
     },
     "Vex": {
-        "weapon": "7% mana stolen per hit",
-        "armor": "+5% maximum fire resist",
-        "shield": "+5% maximum fire resist"
+        "weapon": "7% Mana Stolen Per Hit",
+        "armor": "+5% Maximum Fire Resist",
+        "shield": "+5% Maximum Fire Resist"
     },
     "Ohm": {
-        "weapon": "+50% enhanced damage",
-        "armor": "+5% maximum cold resist",
-        "shield": "+5% maximum cold resist"
+        "weapon": "+50% Enhanced Damage",
+        "armor": "+5% Maximum Cold Resist",
+        "shield": "+5% Maximum Cold Resist"
     },
     "Lo": {
-        "weapon": "20% deadly strike",
-        "armor": "+5% maximum lightning resist",
-        "shield": "+5% maximum lightning resist"
+        "weapon": "20% Deadly Strike",
+        "armor": "+5% Maximum Lightning Resist",
+        "shield": "+5% Maximum Lightning Resist"
     },
     "Sur": {
-        "weapon": "Hit blinds target",
-        "armor": "Aumenta mana máxima em 5%",
-        "shield": "+50 mana"
+        "weapon": "Hit Blinds Target",
+        "armor": "Increase Maximum Mana 5%",
+        "shield": "+50 Mana"
     },
     "Ber": {
-        "weapon": "20% crushing blow",
-        "armor": "Reduz dano em 8%",
-        "shield": "Reduz dano em 8%"
+        "weapon": "20% Crushing Blow",
+        "armor": "Damage Reduced by 8%",
+        "shield": "Damage Reduced by 8%"
     },
     "Jah": {
-        "weapon": "Ignora defesa do alvo",
-        "armor": "Aumenta vida máxima em 5%",
-        "shield": "+50 vida"
+        "weapon": "Ignore Target's Defense",
+        "armor": "Increase Maximum Life 5%",
+        "shield": "+50 to Life"
     },
     "Cham": {
-        "weapon": "Freeze target +3",
+        "weapon": "Freeze Target +3",
         "armor": "Cannot Be Frozen",
         "shield": "Cannot Be Frozen"
     },
@@ -207,7 +207,7 @@ RUNE_TOOLTIPS = {
 
 def get_rune_tooltip(rune_name, slot):
     rune_data = RUNE_TOOLTIPS.get(rune_name, {})
-    return rune_data.get(slot, "Sem informação")
+    return rune_data.get(slot, "No information")
 
 app.jinja_env.globals.update(get_rune_tooltip=get_rune_tooltip)
 
@@ -250,7 +250,7 @@ def inject_global_data():
 
 def load_token_prices():
     if not os.path.exists(TOKEN_PRICES_FILE):
-        raise RuntimeError("Arquivo item_prices.json não encontrado.")
+        raise RuntimeError("item_prices.json file not found.")
 
     with open(TOKEN_PRICES_FILE, "r", encoding="utf-8") as f:
         return json.load(f)
@@ -351,7 +351,7 @@ def export_item():
         character_file = data.get("character_file")
 
         if not item:
-            return jsonify({"success": False, "error": "Item não enviado"}), 400
+            return jsonify({"success": False, "error": "Item not provided"}), 400
 
         item_id = export_item_to_marketplace(item, character_file)
 
@@ -424,21 +424,20 @@ def cancel_listing():
         listing_id = data.get("listing_id")
 
         if not listing_id:
-            return jsonify({"error": "listing_id não informado"}), 400
+            return jsonify({"error": "listing_id not provided"}), 400
 
         item = get_listed_item_by_id(listing_id)
         if not item:
-            return jsonify({"error": "Anúncio não encontrado"}), 404
+            return jsonify({"error": "Listing not found"}), 404
 
         if item["status"] != "listed":
-            return jsonify({"error": "Anúncio não está mais ativo"}), 400
+            return jsonify({"error": "Listing is no longer active"}), 400
 
-        # devolve o item ao shared stash
         save_folder = load_app_config().get("save_folder", "")
         stash_file = find_shared_stash_file(save_folder)
 
         if not stash_file:
-            return jsonify({"error": "Shared stash não encontrado"}), 404
+            return jsonify({"error": "Shared stash not found"}), 404
 
         write_item_to_shared_stash(
             stash_file,
@@ -449,12 +448,12 @@ def cancel_listing():
 
         ok = mark_listing_cancelled(listing_id)
         if not ok:
-            return jsonify({"error": "Não foi possível cancelar o anúncio"}), 400
+            return jsonify({"error": "Could not cancel listing"}), 400
 
         return jsonify({"success": True})
 
     except Exception as e:
-        print("ERRO /api/cancel_listing:", repr(e))
+        print("ERROR /api/cancel_listing:", repr(e))
         return jsonify({"error": str(e)}), 500 
 
 @app.route("/api/update_save_folder", methods=["POST"])
@@ -466,7 +465,7 @@ def update_save_folder():
         new_folder = data.get("save_folder")
 
         if not new_folder:
-            return jsonify({"success": False, "error": "Pasta não informada"}), 400
+            return jsonify({"success": False, "error": "Folder not provided"}), 400
 
         if os.path.exists(new_folder):
             SAVE_FOLDER = new_folder
@@ -475,7 +474,7 @@ def update_save_folder():
             })
             return jsonify({"success": True})
 
-        return jsonify({"success": False, "error": "Pasta não encontrada"}), 404
+        return jsonify({"success": False, "error": "Folder not found"}), 404
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
         
@@ -489,17 +488,16 @@ def list_item():
     stash_file = data.get("stash_file")
 
     if not item or quantity < 1 or unit_price < 1:
-        return jsonify({"error": "Dados inválidos"}), 400
+        return jsonify({"error": "Invalid data"}), 400
 
     item_name = item.get("itemName")
     item_code = item.get("code")
     item_kind = item.get("kind")
 
     if not item_name or not item_code:
-        return jsonify({"error": "Item inválido"}), 400
+        return jsonify({"error": "Invalid item"}), 400
 
     try:
-        # 🧨 1. REMOVE DO .d2i
         write_item_to_shared_stash(
             stash_file,
             item_name=item_name,
@@ -518,7 +516,6 @@ def list_item():
             item_kind=item_kind,
         )
 
-        # 💾 3. SALVA NO BANCO
         conn = get_connection()
 
         conn.execute("""

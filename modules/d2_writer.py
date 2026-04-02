@@ -100,13 +100,13 @@ def resolve_item_code(item_name: str = None, item_code: str = None) -> str:
     if normalized_code:
         if normalized_code in SUPPORTED_ITEM_CODES:
             return normalized_code
-        raise ValueError(f"Item não suportado para escrita automática: {item_code}")
+        raise ValueError(f"Item not supported for automatic writing: {item_code}")
 
     normalized_name = _normalize_item_name(item_name)
     if normalized_name in ITEM_NAME_TO_CODE:
         return ITEM_NAME_TO_CODE[normalized_name]
 
-    raise ValueError(f"Item não suportado para escrita automática: {item_name}")
+    raise ValueError(f"Item not supported for automatic writing: {item_name}")
 
 
 def write_item_to_shared_stash(
@@ -116,7 +116,7 @@ def write_item_to_shared_stash(
     item_code: str = None
 ) -> None:
     if amount == 0:
-        raise ValueError("amount não pode ser zero")
+        raise ValueError("amount cannot be zero")
 
     resolved_item_code = resolve_item_code(item_name=item_name, item_code=item_code)
 
@@ -140,4 +140,4 @@ def write_item_to_shared_stash(
     except subprocess.CalledProcessError as e:
         if os.path.exists(temp_output):
             os.remove(temp_output)
-        raise RuntimeError(f"Erro ao modificar stash: {e}")
+        raise RuntimeError(f"Error modifying stash: {e}")

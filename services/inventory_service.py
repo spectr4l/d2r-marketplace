@@ -172,15 +172,15 @@ def _build_tooltip_lines(item: dict, resolved_name: str) -> list:
 
     amount = int(item.get("amount") or 1)
     if amount > 1:
-        lines.append(f"Quantidade: {amount}")
+        lines.append(f"Amount: {amount}")
 
     item_type = item.get("type")
     if item_type:
-        lines.append(f"Código: {item_type}")
+        lines.append(f"Code: {item_type}")
 
     categories = item.get("categories") or []
     if categories:
-        lines.append("Categorias: " + ", ".join(categories))
+        lines.append("Categories: " + ", ".join(categories))
 
     return lines
 
@@ -208,7 +208,7 @@ def load_inventory_stash(save_folder: str) -> dict:
             "stash_name": "Shared Stash",
             "stash_file": None,
             "item_count": 0,
-            "read_status": "Arquivo shared stash não encontrado",
+            "read_status": "Shared stash file not found",
             "items": [],
             "raw_error": None,
         }
@@ -222,7 +222,7 @@ def load_inventory_stash(save_folder: str) -> dict:
             "stash_name": "Shared Stash",
             "stash_file": stash_path,
             "item_count": len(items),
-            "read_status": "Leitura realizada com sucesso via reader JS",
+            "read_status": "Successfully read via JS reader",
             "items": items,
             "raw_error": None,
         }
@@ -231,7 +231,7 @@ def load_inventory_stash(save_folder: str) -> dict:
             "stash_name": "Shared Stash",
             "stash_file": stash_path,
             "item_count": 0,
-            "read_status": "Erro ao ler o shared stash",
+            "read_status": "Error reading shared stash",
             "items": [],
             "raw_error": str(e),
         }

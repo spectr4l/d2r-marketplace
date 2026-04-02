@@ -39,7 +39,7 @@ def export_item_to_marketplace(item, character_file):
         "export",
         item_id,
         0,
-        f"Item exportado de {character_file}: {item['name']}"
+        f"Item exported from {character_file}: {item['name']}"
     )
 
     return item_id
@@ -50,7 +50,7 @@ def sell_virtual_item(item_id):
     item = next((i for i in items if i["id"] == item_id), None)
 
     if not item:
-        raise ValueError("Item não encontrado")
+        raise ValueError("Item not found")
 
     token_price = item.get("token_price", 0)
     sell_price = calculate_sell_price(token_price)
@@ -62,7 +62,7 @@ def sell_virtual_item(item_id):
         "sell",
         item_id,
         sell_price,
-        f"Vendido por {sell_price} tokens"
+        f"Sold for {sell_price} tokens"
     )
 
     return get_token_balance()
@@ -90,31 +90,31 @@ def _looks_like_rune(item_name, item_type):
 
 def buy_catalog_item(item_name, item_type, token_price, save_folder, qty=1):
     if not isinstance(token_price, int):
-        raise ValueError("token_price precisa ser inteiro")
+        raise ValueError("token_price must be an integer")
     if token_price <= 0:
-        raise ValueError("token_price precisa ser maior que zero")
+        raise ValueError("token_price must be greater than zero")
 
     qty = int(qty)
 
     if qty <= 0:
-        raise ValueError("Quantidade inválida")
+        raise ValueError("Invalid quantity")
 
     normalized_item_type = _normalize_item_type(item_type)
 
     if not _looks_like_rune(item_name, normalized_item_type):
         raise ValueError(
-            f"No momento, apenas runas são suportadas para compra direta no save. "
-            f"Recebido: item_name={item_name!r}, item_type={item_type!r}"
+            f"Currently, only runes are supported for direct purchase into the save file. "
+            f"Received: item_name={item_name!r}, item_type={item_type!r}"
         )
 
     total_price = token_price * qty
     balance = get_token_balance()
     if balance < total_price:
-        raise ValueError("Saldo insuficiente")
+        raise ValueError("Insufficient balance")
 
     stash_path = find_shared_stash_file(save_folder)
     if not stash_path:
-        raise FileNotFoundError("Shared stash não encontrado na pasta configurada")
+        raise FileNotFoundError("Shared stash not found in configured folder")
 
     write_item_to_shared_stash(
         stash_path=stash_path,
@@ -148,7 +148,7 @@ def buy_catalog_item(item_name, item_type, token_price, save_folder, qty=1):
         "buy_import",
         item_id,
         -total_price,
-        f"Comprado e entregue no shared stash: {qty}x {item_name}"
+        f"Purchased and delivered to shared stash: {qty}x {item_name}"
     )
 
     return {
@@ -165,7 +165,7 @@ def import_virtual_item_to_game(item_id, target_character):
         "import",
         item_id,
         0,
-        f"Item preparado para importação em {target_character}"
+        f"Item prepared for import into {target_character}"
     )
 
     return True

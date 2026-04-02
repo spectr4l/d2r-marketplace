@@ -10,10 +10,10 @@ NODE_CMD = "node"
 
 def read_shared_stash(stash_path: str) -> dict:
     if not os.path.isfile(stash_path):
-        raise FileNotFoundError(f"Shared stash não encontrado: {stash_path}")
+        raise FileNotFoundError(f"Shared stash not found: {stash_path}")
 
     if not os.path.isfile(READER_FILE):
-        raise FileNotFoundError(f"Reader Node não encontrado: {READER_FILE}")
+        raise FileNotFoundError(f"Node reader not found: {READER_FILE}")
 
     result = subprocess.run(
         [NODE_CMD, READER_FILE, stash_path],
@@ -26,7 +26,7 @@ def read_shared_stash(stash_path: str) -> dict:
 
     if result.returncode != 0:
         raise RuntimeError(
-            "Falha ao ler shared stash.\n"
+            "Failed to read shared stash.\n"
             f"stdout={result.stdout}\n"
             f"stderr={result.stderr}"
         )
@@ -34,6 +34,6 @@ def read_shared_stash(stash_path: str) -> dict:
     payload = json.loads(result.stdout)
 
     if not payload.get("success"):
-        raise RuntimeError(f"Reader retornou erro: {payload}")
+        raise RuntimeError(f"Reader returned an error: {payload}")
 
     return payload
