@@ -261,18 +261,23 @@ def get_market_reference_price(item_name: str, item_kind: str | None = None) -> 
     normalized_name = str(item_name or "").strip()
     normalized_kind = str(item_kind or "").strip().lower()
 
+    category_map = {
+        "gem": "gems",
+        "potion": "potions",
+        "key": "keys",
+        "essence": "essences",
+        "token": "tokens",
+        "shard": "shards",
+        "unique": "uniques",
+    }
+
     if normalized_kind == "rune" and normalized_name.endswith(" Rune"):
         rune_key = normalized_name.replace(" Rune", "")
         return int(prices.get("runes", {}).get(rune_key, 0))
 
-    if normalized_kind == "gem":
-        return int(prices.get("gems", {}).get(normalized_name, 0))
-
-    if normalized_kind == "potion":
-        return int(prices.get("potions", {}).get(normalized_name, 0))
-
-    if normalized_kind == "unique":
-        return int(prices.get("uniques", {}).get(normalized_name, 0))
+    json_category = category_map.get(normalized_kind)
+    if json_category:
+        return int(prices.get(json_category, {}).get(normalized_name, 0))
 
     return 0
 

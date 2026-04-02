@@ -79,6 +79,27 @@
     "Rejuvenation Potion": 900,
     "Full Rejuvenation Potion": 2200
   },
+  "keys": {
+    "Key of Terror": 12000,
+    "Key of Hate": 12000,
+    "Key of Destruction": 15000
+  },
+  "essences": {
+    "Twisted Essence of Suffering": 18000,
+    "Charged Essence of Hatred": 18000,
+    "Burning Essence of Terror": 22000,
+    "Festering Essence of Destruction": 24000
+  },
+  "tokens": {
+    "Token of Absolution": 90000
+  },
+  "shards": {
+    "Western Worldstone Shard": 25000,
+    "Eastern Worldstone Shard": 25000,
+    "Southern Worldstone Shard": 25000,
+    "Deep Worldstone Shard": 25000,
+    "Northern Worldstone Shard": 25000
+  },
   "uniques": {
     "Harlequin Crest": 95000,
     "The Grandfather": 78000,

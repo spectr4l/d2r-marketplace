@@ -42,7 +42,7 @@ ITEM_NAME_TO_CODE = {
     "cham": "r32",
     "zod": "r33",
 
-    # Gemas
+    # Gems
     "chipped amethyst": "gcv",
     "chipped diamond": "gcw",
     "chipped emerald": "gcg",
@@ -83,9 +83,30 @@ ITEM_NAME_TO_CODE = {
     "perfect topaz": "gpy",
     "perfect skull": "skz",
 
-    # Poções
+    # Potions
     "rejuvenation potion": "rvs",
     "full rejuvenation potion": "rvl",
+
+    # Uber Keys
+    "key of terror": "pk1",
+    "key of hate": "pk2",
+    "key of destruction": "pk3",
+
+    # Token
+    "token of absolution": "toa",
+
+    # Essences
+    "twisted essence of suffering": "tes",
+    "charged essence of hatred": "ceh",
+    "burning essence of terror": "bet",
+    "festering essence of destruction": "fed",
+
+    # Worldstone Shards
+    "western worldstone shard": "xa1",
+    "eastern worldstone shard": "xa2",
+    "southern worldstone shard": "xa3",
+    "deep worldstone shard": "xa4",
+    "northern worldstone shard": "xa5",
 }
 
 SUPPORTED_ITEM_CODES = set(ITEM_NAME_TO_CODE.values())
