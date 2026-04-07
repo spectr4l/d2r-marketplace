@@ -1,108 +1,118 @@
 {
   "runes": {
-    "El": 100,
-    "Eld": 150,
-    "Tir": 220,
-    "Nef": 300,
-    "Eth": 420,
-    "Ith": 550,
-    "Tal": 700,
-    "Ral": 900,
-    "Ort": 1150,
-    "Thul": 1450,
-    "Amn": 1800,
-    "Sol": 2200,
-    "Shael": 2800,
-    "Dol": 3500,
-    "Hel": 4500,
-    "Io": 5600,
-    "Lum": 7000,
-    "Ko": 8800,
-    "Fal": 11000,
-    "Lem": 14000,
-    "Pul": 17500,
-    "Um": 22000,
-    "Mal": 28000,
-    "Ist": 35000,
-    "Gul": 43000,
-    "Vex": 52000,
-    "Ohm": 62000,
-    "Lo": 74000,
-    "Sur": 88000,
+    "El": 6900,
+    "Eld": 6900,
+    "Tir": 6900,
+    "Nef": 6900,
+    "Eth": 6900,
+    "Ith": 6900,
+    "Tal": 6900,
+    "Ral": 6900,
+    "Ort": 6900,
+    "Thul": 6900,
+    "Amn": 6900,
+    "Sol": 6900,
+    "Shael": 6900,
+    "Dol": 6900,
+    "Hel": 6900,
+
+    "Io": 8300,
+    "Lum": 6900,
+    "Ko": 9700,
+    "Fal": 9700,
+    "Lem": 15200,
+
+    "Pul": 16600,
+    "Um": 13800,
+    "Mal": 24900,
+    "Ist": 24900,
+    "Gul": 26200,
+
+    "Vex": 41400,
+    "Ohm": 44200,
+    "Lo": 51100,
+    "Sur": 77300,
     "Ber": 105000,
-    "Jah": 122000,
-    "Cham": 138000,
-    "Zod": 155000
+    "Jah": 89800,
+    "Cham": 49700,
+    "Zod": 93900
   },
+
   "gems": {
-    "Chipped Amethyst": 400,
-    "Chipped Diamond": 400,
-    "Chipped Emerald": 400,
-    "Chipped Ruby": 400,
-    "Chipped Sapphire": 400,
-    "Chipped Topaz": 400,
-    "Chipped Skull": 550,
+    "Chipped Amethyst": 3000,
+    "Chipped Diamond": 3000,
+    "Chipped Emerald": 3000,
+    "Chipped Ruby": 3000,
+    "Chipped Sapphire": 3000,
+    "Chipped Topaz": 3000,
+    "Chipped Skull": 3500,
 
-    "Flawed Amethyst": 800,
-    "Flawed Diamond": 800,
-    "Flawed Emerald": 800,
-    "Flawed Ruby": 800,
-    "Flawed Sapphire": 800,
-    "Flawed Topaz": 800,
-    "Flawed Skull": 1000,
+    "Flawed Amethyst": 6000,
+    "Flawed Diamond": 6000,
+    "Flawed Emerald": 6000,
+    "Flawed Ruby": 6000,
+    "Flawed Sapphire": 6000,
+    "Flawed Topaz": 6000,
+    "Flawed Skull": 7000,
 
-    "Amethyst": 1500,
-    "Diamond": 1500,
-    "Emerald": 1500,
-    "Ruby": 1500,
-    "Sapphire": 1500,
-    "Topaz": 1500,
-    "Skull": 1900,
+    "Amethyst": 9000,
+    "Diamond": 9000,
+    "Emerald": 9000,
+    "Ruby": 9000,
+    "Sapphire": 9000,
+    "Topaz": 9000,
+    "Skull": 11000,
 
-    "Flawless Amethyst": 3200,
-    "Flawless Diamond": 3200,
-    "Flawless Emerald": 3200,
-    "Flawless Ruby": 3200,
-    "Flawless Sapphire": 3200,
-    "Flawless Topaz": 3200,
-    "Flawless Skull": 4000,
+    "Flawless Amethyst": 15000,
+    "Flawless Diamond": 15000,
+    "Flawless Emerald": 15000,
+    "Flawless Ruby": 15000,
+    "Flawless Sapphire": 15000,
+    "Flawless Topaz": 15000,
+    "Flawless Skull": 18000,
 
-    "Perfect Amethyst": 7000,
-    "Perfect Diamond": 7000,
-    "Perfect Emerald": 7000,
-    "Perfect Ruby": 7000,
-    "Perfect Sapphire": 7000,
-    "Perfect Topaz": 7000,
-    "Perfect Skull": 8500
+    "Perfect Amethyst": 24900,
+    "Perfect Diamond": 24900,
+    "Perfect Emerald": 24900,
+    "Perfect Ruby": 24900,
+    "Perfect Sapphire": 24900,
+    "Perfect Topaz": 24900,
+    "Perfect Skull": 28000
   },
+
   "potions": {
-    "Rejuvenation Potion": 900,
-    "Full Rejuvenation Potion": 2200
+    "Rejuvenation Potion": 250,
+    "Full Rejuvenation Potion": 600
   },
+
   "keys": {
-    "Key of Terror": 12000,
-    "Key of Hate": 12000,
-    "Key of Destruction": 15000
+    "Key of Terror": 37300,
+    "Key of Hate": 37300,
+    "Key of Destruction": 37300
   },
+
   "essences": {
-    "Twisted Essence of Suffering": 18000,
-    "Charged Essence of Hatred": 18000,
-    "Burning Essence of Terror": 22000,
-    "Festering Essence of Destruction": 24000
+    "Twisted Essence of Suffering": 24900,
+    "Charged Essence of Hatred": 24900,
+    "Burning Essence of Terror": 24900,
+    "Festering Essence of Destruction": 24900
   },
+
   "tokens": {
-    "Token of Absolution": 90000
+    "Token of Absolution": 24900
   },
+
   "shards": {
-    "Western Worldstone Shard": 25000,
-    "Eastern Worldstone Shard": 25000,
-    "Southern Worldstone Shard": 25000,
-    "Deep Worldstone Shard": 25000,
-    "Northern Worldstone Shard": 25000
+    "Western Worldstone Shard": 74600,
+    "Eastern Worldstone Shard": 74600,
+    "Southern Worldstone Shard": 74600,
+    "Deep Worldstone Shard": 74600,
+    "Northern Worldstone Shard": 74600
   },
+
   "uniques": {
-    "Harlequin Crest": 95000,
-    "The Grandfather": 78000,
-    "Windforce": 110000
+    "Harlequin Crest": 118800,
+    "The Grandfather": 84000,
+    "Windforce": 118800
   }
 }
