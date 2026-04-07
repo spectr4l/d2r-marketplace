@@ -346,19 +346,19 @@ def _build_tooltip_lines(item: dict, meta: dict | None = None) -> list:
 
     amount = _safe_int(item.get("amount"), 1)
     if amount > 1:
-        lines.append(f"Quantidade: {amount}")
+        lines.append(f"Quantity: {amount}")
 
     item_code = str(item.get("type") or "").strip().lower()
     if item_code:
-        lines.append(f"Código: {item_code}")
+        lines.append(f"Code: {item_code}")
 
     kind = resolved.get("kind")
     if kind and kind != "unknown":
-        lines.append(f"Tipo: {kind}")
+        lines.append(f"Type: {kind}")
 
     categories = item.get("categories") or []
     if categories:
-        lines.append("Categorias: " + ", ".join(categories))
+        lines.append("Categories: " + ", ".join(categories))
 
     return lines
 
@@ -386,7 +386,7 @@ def load_inventory_stash(save_folder: str) -> dict:
             "stash_name": "Shared Stash",
             "stash_file": None,
             "item_count": 0,
-            "read_status": "Arquivo shared stash não encontrado",
+            "read_status": "Shared stash file not found",
             "items": [],
             "raw_error": None,
         }
@@ -403,13 +403,13 @@ def load_inventory_stash(save_folder: str) -> dict:
         items = [_convert_stackable_item(item) for item in filtered_stackables]
 
         misc_path = _find_misc_txt_path()
-        misc_status = misc_path if misc_path else "misc.txt não encontrado"
+        misc_status = misc_path if misc_path else "misc.txt not found"
 
         return {
             "stash_name": "Shared Stash",
             "stash_file": stash_path,
             "item_count": len(items),
-            "read_status": "Leitura realizada com sucesso via reader JS",
+            "read_status": "Stash successfully parsed via JS reader",
             "misc_file": misc_status,
             "items": items,
             "raw_error": None,
@@ -420,7 +420,7 @@ def load_inventory_stash(save_folder: str) -> dict:
             "stash_name": "Shared Stash",
             "stash_file": stash_path,
             "item_count": 0,
-            "read_status": "Erro ao ler o shared stash",
+            "read_status": "Error reading shared stash",
             "items": [],
             "raw_error": str(e),
         }
