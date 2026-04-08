@@ -396,8 +396,12 @@ def load_inventory_stash(save_folder: str) -> dict:
         stackables = parsed.get("stackables", [])
 
         filtered_stackables = [
-            item for item in stackables
-            if str(item.get("type") or "").strip().lower() in VISIBLE_INVENTORY_CODES
+            item
+            for item in stackables
+            if (
+                str(item.get("type") or "").strip().lower() in VISIBLE_INVENTORY_CODES
+                and _safe_int(item.get("amount"), 0) > 0
+            )
         ]
 
         items = [_convert_stackable_item(item) for item in filtered_stackables]
