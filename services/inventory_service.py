@@ -157,9 +157,7 @@ def find_shared_stash_file(save_folder: str):
         return None
 
     candidates = [
-        "SharedStashSoftCoreV2.d2i",
         "ModernSharedStashSoftCoreV2.d2i",
-        "SharedStashHardCoreV2.d2i",
         "ModernSharedStashHardCoreV2.d2i",
     ]
 
