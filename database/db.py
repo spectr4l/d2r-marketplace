@@ -2,8 +2,10 @@
 import os
 import json
 from datetime import datetime, UTC
+from paths import get_user_data_path
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "d2r_marketplace.db")
+INITIAL_TOKEN_BALANCE = 10000
+DB_PATH = get_user_data_path("database", "d2r_marketplace.db")
 
 
 def get_connection():
@@ -16,18 +18,18 @@ def init_database():
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute("""
+    cursor.execute(f"""
         CREATE TABLE IF NOT EXISTS user (
             id INTEGER PRIMARY KEY CHECK (id = 1),
             username TEXT DEFAULT 'Jogador',
-            token_balance INTEGER DEFAULT 10000
+            token_balance INTEGER DEFAULT {INITIAL_TOKEN_BALANCE}
         )
     """)
 
     cursor.execute("""
         INSERT OR IGNORE INTO user (id, username, token_balance)
-        VALUES (1, 'Jogador', 10000)
-    """)
+        VALUES (1, 'Jogador', ?)
+    """, (INITIAL_TOKEN_BALANCE,))
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS virtual_items (
@@ -74,7 +76,7 @@ def get_token_balance():
     cursor.execute("SELECT token_balance FROM user WHERE id = 1")
     result = cursor.fetchone()
     conn.close()
-    return result["token_balance"] if result else 10000
+    return result["token_balance"] if result else INITIAL_TOKEN_BALANCE
 
 
 def update_token_balance(amount):

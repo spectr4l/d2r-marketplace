@@ -6,6 +6,11 @@ import random
 import shutil
 from datetime import datetime, UTC
 
+from paths import (
+    get_resource_path,
+    ensure_default_file,
+)
+
 from database.db import (
     init_database,
     get_connection,
@@ -26,15 +31,16 @@ from services.marketplace_service import (
 )
 from services.inventory_service import load_inventory_stash, find_shared_stash_file
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    template_folder=get_resource_path("templates"),
+    static_folder=get_resource_path("static"),
+)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key-change-this")
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-CONFIG_FILE = os.path.join(BASE_DIR, "config.json")
-
-DATA_DIR = os.path.join(BASE_DIR, "data")
-TOKEN_PRICES_FILE = os.path.join(DATA_DIR, "item_prices.json")
+CONFIG_FILE = ensure_default_file("config.json")
+TOKEN_PRICES_FILE = ensure_default_file("data/item_prices.json")
+DATA_DIR = os.path.dirname(TOKEN_PRICES_FILE)
 
 DEFAULT_SAVE_FOLDER = os.path.expanduser("~/Documents/Diablo II Resurrected/")
 

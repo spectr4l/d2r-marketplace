@@ -1,10 +1,29 @@
 import os
 import subprocess
+import sys
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PARSER_DIR = os.path.join(BASE_DIR, "tools", "d2r_parser")
-PATCHER_FILE = os.path.join(PARSER_DIR, "patch_stackable.cjs")
-NODE_CMD = "node"
+
+def get_resource_base_dir():
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        return sys._MEIPASS
+    return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def get_parser_dir():
+    base_dir = get_resource_base_dir()
+    return os.path.join(base_dir, "tools", "d2r_parser")
+
+
+def get_patcher_file():
+    return os.path.join(get_parser_dir(), "patch_stackable.cjs")
+
+
+def get_node_cmd():
+    if getattr(sys, "frozen", False):
+        base_dir = get_resource_base_dir()
+        return os.path.join(base_dir, "tools", "node", "node.exe")
+    return "node"
+
 
 ITEM_NAME_TO_CODE = {
     # Runes
@@ -139,13 +158,28 @@ def write_item_to_shared_stash(
     if amount == 0:
         raise ValueError("amount cannot be zero")
 
-    resolved_item_code = resolve_item_code(item_name=item_name, item_code=item_code)
+    node_cmd = get_node_cmd()
+    parser_dir = get_parser_dir()
+    patcher_file = get_patcher_file()
 
+    if not os.path.isfile(stash_path):
+        raise FileNotFoundError(f"Shared stash not found: {stash_path}")
+
+    if getattr(sys, "frozen", False) and not os.path.isfile(node_cmd):
+        raise FileNotFoundError(f"Embedded Node not found: {node_cmd}")
+
+    if not os.path.isdir(parser_dir):
+        raise FileNotFoundError(f"Parser directory not found: {parser_dir}")
+
+    if not os.path.isfile(patcher_file):
+        raise FileNotFoundError(f"Patcher file not found: {patcher_file}")
+
+    resolved_item_code = resolve_item_code(item_name=item_name, item_code=item_code)
     temp_output = stash_path + ".tmp"
 
     command = [
-        NODE_CMD,
-        PATCHER_FILE,
+        node_cmd,
+        patcher_file,
         stash_path,
         temp_output,
         resolved_item_code,
@@ -155,10 +189,37 @@ def write_item_to_shared_stash(
     if amount > 0:
         command.append("--create")
 
+    startupinfo = None
+    creationflags = 0
+
+    if os.name == "nt":
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        creationflags = subprocess.CREATE_NO_WINDOW
+
     try:
-        subprocess.run(command, check=True)
+        result = subprocess.run(
+            command,
+            check=True,
+            cwd=parser_dir,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            startupinfo=startupinfo,
+            creationflags=creationflags,
+        )
         os.replace(temp_output, stash_path)
+
     except subprocess.CalledProcessError as e:
         if os.path.exists(temp_output):
             os.remove(temp_output)
-        raise RuntimeError(f"Error modifying stash: {e}")
+
+        raise RuntimeError(
+            "Error modifying stash.\n"
+            f"NODE_CMD={node_cmd}\n"
+            f"PATCHER_FILE={patcher_file}\n"
+            f"PARSER_DIR={parser_dir}\n"
+            f"stdout={e.stdout}\n"
+            f"stderr={e.stderr}"
+        ) from e
