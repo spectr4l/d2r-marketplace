@@ -288,17 +288,17 @@ def calculate_sell_after_seconds(unit_price: int, reference_price: int, item_kin
         ratio = unit_price / reference_price
 
         if ratio <= 0.80:
-            base_seconds = random.randint(3 * 60, 10 * 60)              # 3–10 min
+            base_seconds = random.randint(1 * 60, 10 * 60)
         elif ratio <= 0.95:
-            base_seconds = random.randint(10 * 60, 25 * 60)             # 10–25 min
+            base_seconds = random.randint(1 * 60, 25 * 60)
         elif ratio <= 1.05:
-            base_seconds = random.randint(25 * 60, 60 * 60)             # 25–60 min
+            base_seconds = random.randint(2 * 60, 30 * 60)
         elif ratio <= 1.25:
-            base_seconds = random.randint(60 * 60, 3 * 60 * 60)         # 1–3 h
+            base_seconds = random.randint(30 * 60, 3 * 60 * 60)
         elif ratio <= 1.60:
-            base_seconds = random.randint(3 * 60 * 60, 8 * 60 * 60)     # 3–8 h
+            base_seconds = random.randint(3 * 60 * 60, 8 * 60 * 60)
         else:
-            base_seconds = random.randint(8 * 60 * 60, 24 * 60 * 60)    # 8–24 h
+            base_seconds = random.randint(8 * 60 * 60, 24 * 60 * 60)
 
     kind = str(item_kind or "").strip().lower()
 
@@ -503,6 +503,22 @@ def list_item():
         return jsonify({"error": "Invalid item"}), 400
 
     try:
+        # validação real do stash
+        inventory = load_inventory_stash(SAVE_FOLDER)
+        real_item = next(
+            (
+                i for i in inventory.get("items", [])
+                if str(i.get("code", "")).lower() == str(item_code).lower()
+            ),
+            None
+        )
+
+        real_qty = int(real_item.get("quantity", 0)) if real_item else 0
+        if real_qty < quantity:
+            return jsonify({
+                "error": f"Quantidade insuficiente no stash para {item_name}. Atual={real_qty}, pedido={quantity}"
+            }), 400
+
         write_item_to_shared_stash(
             stash_file,
             item_name=item_name,
