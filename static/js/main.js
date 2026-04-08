@@ -200,6 +200,34 @@ function hideFloatingTooltip(tooltipEl) {
     tooltipEl.style.top = "";
 }
 
+function formatTokenPrice(value) {
+  const number = Number(value || 0);
+  return number.toLocaleString("pt-BR");
+}
+
+async function loadSellPriceSuggestion(item) {
+  const priceInput = document.getElementById("sell-unit-price");
+  if (!priceInput) return;
+
+  // fallback inicial
+  priceInput.value = 1;
+
+  try {
+    const res = await postJson("/api/sell_price_suggestion", { item });
+
+    if (!res || res.error || !res.success) {
+      return;
+    }
+
+    if (Number(res.suggested_price) > 0) {
+      priceInput.value = Number(res.suggested_price);
+    }
+
+  } catch (err) {
+    console.error("loadSellPriceSuggestion error:", err);
+  }
+}
+
 function openSellModal(item) {
     if (!item) {
         showMessage("Invalid item.", "error");
@@ -227,6 +255,8 @@ function openSellModal(item) {
 
     modal.classList.add("is-open");
     document.body.classList.add("modal-open");
+
+    loadSellPriceSuggestion(item);
 }
 
 function closeSellModal() {

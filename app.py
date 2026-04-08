@@ -281,6 +281,31 @@ def get_market_reference_price(item_name: str, item_kind: str | None = None) -> 
 
     return 0
 
+def get_sell_price_suggestion(item_name: str, item_kind: str | None = None) -> dict:
+    base_price = get_market_reference_price(item_name=item_name, item_kind=item_kind)
+
+    if base_price <= 0:
+        return {
+            "base_price": 0,
+            "suggested_price": 0,
+            "min_price": 0,
+            "max_price": 0,
+            "variation": 0,
+            "has_reference": False,
+        }
+
+    # margem pequena de 4%
+    variation = max(1, int(round(base_price * 0.04)))
+
+    return {
+        "base_price": base_price,
+        "suggested_price": base_price,
+        "min_price": base_price,
+        "max_price": base_price + variation,
+        "variation": variation,
+        "has_reference": True,
+    }
+
 def calculate_sell_after_seconds(unit_price: int, reference_price: int, item_kind: str | None = None) -> int:
     if reference_price <= 0:
         base_seconds = random.randint(30 * 60, 90 * 60)  # 30–90 min
@@ -482,6 +507,27 @@ def update_save_folder():
         return jsonify({"success": False, "error": "Folder not found"}), 404
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
+    
+@app.route("/api/sell_price_suggestion", methods=["POST"])
+def sell_price_suggestion():
+    data = request.get_json() or {}
+    item = data.get("item") or {}
+
+    item_name = item.get("itemName")
+    item_kind = item.get("kind")
+
+    if not item_name:
+        return jsonify({"error": "Invalid item"}), 400
+
+    pricing = get_sell_price_suggestion(
+        item_name=item_name,
+        item_kind=item_kind,
+    )
+
+    return jsonify({
+        "success": True,
+        **pricing,
+    })    
         
 @app.route("/api/list_item", methods=["POST"])
 def list_item():
