@@ -282,3 +282,53 @@ input:focus, select:focus, textarea:focus {
 .inventory-grid {
   overflow: visible;
 }
+
+.toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast {
+  min-width: 260px;
+  max-width: 320px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(201, 163, 74, 0.25);
+  background: rgba(20, 16, 12, 0.95);
+  color: var(--text-main);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+  font-size: 0.92rem;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.25s ease;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast.success {
+  border-color: rgba(90, 160, 90, 0.4);
+  color: #9bc79b;
+}
+
+.toast.error {
+  border-color: rgba(160, 70, 70, 0.4);
+  color: #e0a39d;
+}
+
+.toast.info {
+  border-color: rgba(201, 163, 74, 0.35);
+  color: #d6bf86;
+}
+
+.toast.warning {
+  border-color: rgba(214, 164, 64, 0.40);
+  color: #f0c674;
+}

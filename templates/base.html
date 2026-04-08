@@ -39,10 +39,11 @@
     </header>
 
     <main class="page-content">
-      <div id="message-area" class="message-area"></div>
       {% block content %}{% endblock %}
     </main>
   </div>
+
+  <div id="toast-container" class="toast-container"></div>
 
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
   {% block extra_js %}{% endblock %}

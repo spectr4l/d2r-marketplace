@@ -11,14 +11,7 @@ function updateBalanceDisplay(newBalance) {
 }
 
 function showMessage(text, type = "success") {
-    const area = document.getElementById("message-area");
-    if (!area) return;
-
-    area.innerHTML = `<div class="message ${type}">${text}</div>`;
-
-    setTimeout(() => {
-        area.innerHTML = "";
-    }, 3500);
+    showToast(text, type);
 }
 
 async function postJson(url, payload) {
@@ -146,6 +139,60 @@ async function updateSaveFolder() {
         showMessage("Error updating folder: " + error.message, "error");
         console.error(error);
     }
+}
+
+async function createStashBackup() {
+  try {
+    const res = await fetch("/api/create_stash_backup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      showToast(data.error || "Failed to create backup.", "error");
+      return;
+    }
+
+    if (data.backup_count > 0) {
+      showToast(
+        `Backup created (${data.backup_count} file${data.backup_count > 1 ? "s" : ""})`,
+        "success"
+      );
+    } else {
+      showToast("No stash files found to back up.", "error");
+    }
+
+  } catch (err) {
+    console.error("createStashBackup error:", err);
+    showToast("Unexpected error while creating backup.", "error");
+  }
+}
+
+function showToast(message, type = "success", duration = 3000) {
+  const container = document.getElementById("toast-container");
+  if (!container) return;
+
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+
+  container.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.classList.add("show");
+  });
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+
+    setTimeout(() => {
+      toast.remove();
+    }, 250);
+  }, duration);
 }
 
 function filterCatalogCards() {

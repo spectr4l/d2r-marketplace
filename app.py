@@ -3,6 +3,7 @@ import os
 import json
 import uuid
 import random
+import shutil
 from datetime import datetime, UTC
 
 from database.db import (
@@ -247,6 +248,58 @@ def inject_global_data():
         "global_balance": get_token_balance()
     }
 
+def create_stash_backup_files(save_folder: str) -> dict:
+    if not save_folder or not os.path.isdir(save_folder):
+        return {
+            "success": False,
+            "error": "Save folder not configured or not found."
+        }
+
+    target_files = [
+        "ModernSharedStashSoftCoreV2.d2i",
+        "ModernSharedStashHardCoreV2.d2i",
+    ]
+
+    found_files = []
+    for filename in target_files:
+        full_path = os.path.join(save_folder, filename)
+        if os.path.isfile(full_path):
+            found_files.append(full_path)
+
+    if not found_files:
+        return {
+            "success": True,
+            "backup_count": 0,
+            "message": "No accepted stash files were found in the save folder."
+        }
+
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    backup_dir = os.path.join(save_folder, "marketplace_backups", timestamp)
+    os.makedirs(backup_dir, exist_ok=True)
+
+    copied_files = []
+    for src_path in found_files:
+        filename = os.path.basename(src_path)
+        dest_path = os.path.join(backup_dir, filename)
+        shutil.copy2(src_path, dest_path)
+        copied_files.append(filename)
+
+    return {
+        "success": True,
+        "backup_count": len(copied_files),
+        "backup_dir": backup_dir,
+        "files": copied_files,
+        "message": "Backup created successfully."
+    }
+
+@app.route("/api/create_stash_backup", methods=["POST"])
+def create_stash_backup():
+    result = create_stash_backup_files(SAVE_FOLDER)
+
+    if not result.get("success"):
+        return jsonify(result), 400
+
+    return jsonify(result)
 
 def load_token_prices():
     if not os.path.exists(TOKEN_PRICES_FILE):
