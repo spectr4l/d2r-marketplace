@@ -20,13 +20,13 @@ def init_database():
         CREATE TABLE IF NOT EXISTS user (
             id INTEGER PRIMARY KEY CHECK (id = 1),
             username TEXT DEFAULT 'Jogador',
-            token_balance INTEGER DEFAULT 1000
+            token_balance INTEGER DEFAULT 10000
         )
     """)
 
     cursor.execute("""
         INSERT OR IGNORE INTO user (id, username, token_balance)
-        VALUES (1, 'Jogador', 1000)
+        VALUES (1, 'Jogador', 10000)
     """)
 
     cursor.execute("""
@@ -74,7 +74,7 @@ def get_token_balance():
     cursor.execute("SELECT token_balance FROM user WHERE id = 1")
     result = cursor.fetchone()
     conn.close()
-    return result["token_balance"] if result else 1000
+    return result["token_balance"] if result else 10000
 
 
 def update_token_balance(amount):
