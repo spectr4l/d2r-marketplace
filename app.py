@@ -220,14 +220,30 @@ app.jinja_env.globals.update(get_rune_tooltip=get_rune_tooltip)
 
 init_database()
 
+def resolve_save_folder(path_value: str) -> str:
+    if not path_value:
+        return ""
+
+    resolved = os.path.expandvars(path_value)
+    resolved = os.path.expanduser(resolved)
+
+    resolved = os.path.normpath(resolved.strip())
+    return resolved
+
+
+DEFAULT_SAVE_FOLDER = resolve_save_folder(
+    r"%USERPROFILE%\Saved Games\Diablo II Resurrected"
+)
+
 
 def load_app_config():
     if os.path.exists(CONFIG_FILE):
         try:
             with open(CONFIG_FILE, "r", encoding="utf-8") as f:
                 data = json.load(f)
+                configured_path = data.get("save_folder") or DEFAULT_SAVE_FOLDER
                 return {
-                    "save_folder": data.get("save_folder") or DEFAULT_SAVE_FOLDER
+                    "save_folder": resolve_save_folder(configured_path)
                 }
         except Exception:
             return {
@@ -556,12 +572,16 @@ def update_save_folder():
         if not new_folder:
             return jsonify({"success": False, "error": "Folder not provided"}), 400
 
-        if os.path.exists(new_folder):
-            SAVE_FOLDER = new_folder
+        resolved_folder = resolve_save_folder(new_folder)
+
+        if os.path.exists(resolved_folder):
+            SAVE_FOLDER = resolved_folder
             save_app_config({
-                "save_folder": SAVE_FOLDER
+                "save_folder": new_folder  # salva como o usuário digitou
             })
-            return jsonify({"success": True})
+            return jsonify({"success": True, "resolved_folder": resolved_folder})
+
+        return jsonify({"success": False, "error": f"Folder not found: {resolved_folder}"}), 404
 
         return jsonify({"success": False, "error": "Folder not found"}), 404
     except Exception as e:
