@@ -1,31 +1,74 @@
-# D2R Marketplace (Offline Auction House)
+# What it does
 
-Simula uma Auction House para Diablo II: Resurrected em modo single player.
+- 📦 Scan your shared stash automatically  
+- 🛒 Buy items from a built-in market  
+- 💰 List your own items for sale  
+- 🧮 Manage a simple token-based economy  
+- ⚙️ Works completely offline  
 
-O projeto permite listar itens do shared stash, definir preços e vendê-los automaticamente ao longo do tempo, criando a sensação de um mercado ativo.
 
----
+## Why use it?
 
-## ✨ Funcionalidades
+- No more manual stash tracking  
+- Makes single-player feel more dynamic  
+- Adds a sense of progression and trading  
+- Designed specifically for solo players  
 
-- Leitura do shared stash (.d2i)
-- Suporte a itens stackables:
-  - Runas
-  - Gemas
-  - Poções de rejuvenation
-- Sistema de venda estilo Auction House
-- Economia baseada em tokens
-- Preço dinâmico baseado em mercado
-- Venda automática com tempo variável
-- Cancelamento de anúncios
-- Histórico de transações
 
----
+## Installation & Usage
 
-## 🚀 Como rodar
+> ⚠️ **Important:** Never open the game and the D2R Marketplace at the same time, as this may corrupt your save file.
 
-```bash
-pip install -r requirements.txt
-python app.py
+### 1. Download
 
-http://localhost:5000
+To use the mod, download the latest release (which already contains the ready-to-use build):
+
+👉 https://github.com/spectr4l/d2r-marketplace/releases
+
+### 2. Setup
+
+1. In the **Settings** tab, paste the location of your D2R save folder, for example:  
+   `C:\Users\Emilio\Saved Games\Diablo II Resurrected`
+
+2. If you are using **D2RMM**, the path will likely be something like:  
+   `C:\Users\Emilio\Saved Games\Diablo II Resurrected\mods\D2RMM`
+
+3. Click the **Save Folder** button, then click **Create Backup**.
+
+4. If you have items in your **Shared Stash**, they will appear in the **Inventory** tab, where you can list them for sale.
+
+5. Sell them at the suggested price if you want them to sell quickly. Setting prices too high may cause your items to take several hours to sell.
+
+6. Collect **TOKENS** from your sold items to purchase the runes you need.
+
+
+## Features
+
+- Rune market with tier system  
+- Shared stash reader  
+- Item listing system  
+- Token balance system  
+- Clean and simple UI  
+
+
+## Support the project ☕
+
+D2R Market is free and made for the community.
+
+If it has improved your experience, consider supporting.
+
+
+## Notes
+
+- Designed for single-player only  
+- Modified items are not supported. If they are present, the **Shared Stash will not be read**  
+- No connection to Battle.net  
+- Safe to use offline  
+
+
+## Future plans
+
+- More item categories  
+- Expanded market system  
+- UI improvements  
+- Quality-of-life features  
