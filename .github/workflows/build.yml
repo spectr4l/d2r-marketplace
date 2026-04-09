@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -57,9 +57,17 @@ jobs:
       - name: Create ZIP
         shell: pwsh
         run: |
-          Compress-Archive -Path dist/D2RMarketplace-windows.exe -DestinationPath D2RMarketplace-windows.zip
+          Compress-Archive -Path dist/D2RMarketplace-windows.exe -DestinationPath D2RMarketplace-windows.zip -Force
+
+      - name: Upload artifact (manual runs)
+        if: github.ref_type != 'tag'
+        uses: actions/upload-artifact@v4
+        with:
+          name: D2RMarketplace-windows
+          path: D2RMarketplace-windows.zip
 
       - name: Upload to GitHub Release
+        if: github.ref_type == 'tag'
         uses: softprops/action-gh-release@v2
         with:
           files: D2RMarketplace-windows.zip
