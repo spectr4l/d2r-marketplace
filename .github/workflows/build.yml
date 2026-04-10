@@ -32,8 +32,8 @@ jobs:
       - name: Download Node.exe
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Force -Path tools | Out-Null
-          Invoke-WebRequest https://nodejs.org/dist/v22.2.0/win-x64/node.exe -OutFile tools/node.exe
+          New-Item -ItemType Directory -Force -Path tools/node | Out-Null
+          Invoke-WebRequest https://nodejs.org/dist/v22.2.0/win-x64/node.exe -OutFile tools/node/node.exe
 
       - name: Build executable
         shell: pwsh
